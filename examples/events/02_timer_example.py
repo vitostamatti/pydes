@@ -1,7 +1,7 @@
-from pydes.events import AbstractEvent, Simulator
+from pydes.events import Event, Simulator
 
 
-class Timeout(AbstractEvent):
+class Timeout(Event):
     def __init__(self, time: float):
         self.time = time
 

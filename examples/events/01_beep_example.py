@@ -1,8 +1,8 @@
 # Beep Example
-from pydes.events import Simulator, AbstractEvent
+from pydes.events import Simulator, Event
 
 
-class Beep(AbstractEvent):
+class Beep(Event):
     def trigger(self, sim: Simulator):
         print(f"The time is {sim.now()}")
 

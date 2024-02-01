@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 from typing import Optional
-from pydes.events import AbstractEvent, Simulator
+from pydes.events import Event, Simulator
 
 
 class PersonState(Enum):
@@ -34,7 +34,7 @@ class Population:
             print(f"{str(state.name)}: {self.state_count[state.value]}")
 
 
-class Person(AbstractEvent):
+class Person(Event):
     def __init__(self, state: PersonState, population: Population):
         self.state: PersonState = state
         self.next_state: Optional[PersonState] = None

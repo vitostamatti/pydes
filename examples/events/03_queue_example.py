@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from itertools import count
 from typing import List, Optional
-from pydes.events import AbstractEvent, Simulator
+from pydes.events import Event, Simulator
 import random
 
 
@@ -27,7 +27,7 @@ class Queue:
         return len(self.elements)
 
 
-class Generator(AbstractEvent):
+class Generator(Event):
     def __init__(self, queue: Queue):
         self.queue = queue
         self.count = count()
@@ -40,7 +40,7 @@ class Generator(AbstractEvent):
         sim.schedule(self, delay)
 
 
-class Server(AbstractEvent):
+class Server(Event):
     def __init__(self, queue: Queue):
         self.queue = queue
         self.current_customer: Optional[Customer] = None
