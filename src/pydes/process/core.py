@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict
 from heapq import heappush, heappop
+from math import inf
 from typing import Any, AnyStr, Callable, List, Optional, Tuple
 from greenlet import greenlet
 
@@ -29,6 +30,9 @@ class Component(metaclass=MetaComponent):
         """Main method to be implemented by subclasses."""
         pass
 
+    def __str__(self):
+        return self.__name__
+
 
 @dataclass
 class Record:
@@ -52,6 +56,9 @@ class Monitor:
         self._sim = sim
         self._trace = trace
         self._values: List[Record] = []
+
+    def reset(self):
+        self._values = []
 
     def record(self, component: Component, description: str, value: Any):
         """Record a simulation event.
@@ -131,6 +138,7 @@ class Simulator:
         self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
         self._times = []
         self._monitor = Monitor(self, trace)
+        self._init_time = initial_time
         self._now = initial_time
 
     def record(self, component: Component, description: str, value: Any):
@@ -147,7 +155,7 @@ class Simulator:
         """Get recorded simulation events."""
         return self._monitor.values()
 
-    def activate(self, what: Component, at: float = None, after: float = None):
+    def schedule(self, what: Component, at: float = None, after: float = None):
         """Launch a process.
 
         Activates a process either immediately (if both `at` and `after` are None) or after a delay.
@@ -251,7 +259,7 @@ class Simulator:
                 return process
         return None
 
-    def simulate(self):
+    def run(self, until: float = inf):
         """Start simulation."""
         while True:
             # Is anybody wakeable?
@@ -259,6 +267,9 @@ class Simulator:
 
             # Advance time & retry
             while process == None:
+                # if we reached the max running time we return and end simulation
+                if self._now >= until:
+                    return
                 # Do we still have process waiting for a new time?
                 if self._times:
                     self._now = heappop(self._times)
@@ -269,6 +280,12 @@ class Simulator:
             # Switch to it
             process.switch()
             # Back to scheduling
+
+    def reset(self):
+        self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
+        self._times = []
+        self._monitor.reset()
+        self._now = self._init_time
 
     def next(self):
         """Switch to the next awakeable process."""

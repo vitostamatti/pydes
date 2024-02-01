@@ -55,10 +55,10 @@ if __name__ == "__main__":
     fb2 = Process2(sim, state)
     fb3 = Process3(sim, state)
 
-    sim.activate(fb1)
-    sim.activate(fb1_1, at=1)
-    sim.activate(fb2, at=20)
-    sim.activate(fb3)
-    sim.simulate()
+    sim.schedule(fb1)
+    sim.schedule(fb1_1, at=1)
+    sim.schedule(fb2, at=20)
+    sim.schedule(fb3)
+    sim.run()
 
     sim.records()
