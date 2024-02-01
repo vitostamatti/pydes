@@ -9,7 +9,7 @@ readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Vito Stamatti", email = "vitostamatti@gmail.com" }]
 classifiers = []
-dependencies = []
+dependencies = ["greenlet"]
 requires-python = ">= 3.10"
 dynamic = ["version"]
 
@@ -24,12 +24,12 @@ version = { attr = "pydes.__version__" }
 [tool.setuptools]
 license-files = ["LICENSE.txt"]
 
-[tool.setuptools_scm]
+# [tool.setuptools_scm]
 
-[tool.mypy]
-pretty = true
-show_error_codes = true
-files = ["src/pydes"]
+# [tool.mypy]
+# pretty = true
+# show_error_codes = true
+# files = ["src/pydes"]
 
 # [tool.pytest.ini_options]
 # addopts = '''--doctest-glob="*.rst" -m "not benchmark"'''
