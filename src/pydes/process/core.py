@@ -1,121 +1,11 @@
-from dataclasses import dataclass, asdict
 from heapq import heappush, heappop
+from itertools import count
 from math import inf
 from typing import Any, AnyStr, Callable, List, Optional, Tuple
 from greenlet import greenlet
 
-
-class MetaComponent(type):
-    """Metaclass used to track the number of instances of every component subclass."""
-
-    __component_instance_count = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls.__component_instance_count:
-            cls.__component_instance_count[cls] = 0
-        else:
-            cls.__component_instance_count[cls] += 1
-
-        instance = super().__call__(*args, **kwargs)
-
-        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
-
-        return instance
-
-
-class Component(metaclass=MetaComponent):
-    """Base class for components in the simulation."""
-
-    def main(self):
-        """Main method to be implemented by subclasses."""
-        pass
-
-    def __str__(self):
-        return self.__name__
-
-
-@dataclass
-class Record:
-    """Stores information about a simulation event."""
-
-    time: float
-    component: str
-    description: str
-    value: Any
-
-
-class Monitor:
-    """Stores values which change during simulation.
-
-    Args:
-        sim (Simulator): The simulator instance.
-        trace (bool): Indicates whether tracing is enabled or not.
-    """
-
-    def __init__(self, sim: "Simulator", trace: bool):
-        self._sim = sim
-        self._trace = trace
-        self._values: List[Record] = []
-
-    def reset(self):
-        self._values = []
-
-    def record(self, component: Component, description: str, value: Any):
-        """Record a simulation event.
-
-        Args:
-            component (Component): The component associated with the event.
-            description (str): Description of the event.
-            value (Any): Value associated with the event.
-        """
-        rec = Record(
-            time=self._sim.now(),
-            component=component.__name__,
-            description=description,
-            value=value,
-        )
-        if self._trace:
-            self._display(rec)
-
-        self._values.append(rec)
-
-    def values(self) -> List[Record]:
-        """Get recorded simulation events."""
-        return self._values
-
-    def _display(self, rec):
-        """Display a recorded event."""
-        if len(self._values) == 0:
-            self._display_header()
-        else:
-            self._display_record(rec)
-
-    def _display_record(self, rec: Record):
-        """Display a single record."""
-        desc = (
-            rec.description
-            if len(rec.description) < 60
-            else rec.description[:57] + "..."
-        )
-        row = [str(e) for e in [rec.time, rec.component, desc, rec.value]]
-
-        self._display_row(row)
-
-    def _display_header(self):
-        """Display the header for the table."""
-        colsize = [15, 15, 60, 15]
-        sep = ["-" * s for s in colsize]
-        empty = [" " * s for s in colsize]
-        row = ["time", "component", "description", "value"]
-        self._display_row(sep)
-        self._display_row(row)
-        self._display_row(sep)
-
-        self._display_row(empty)
-
-    def _display_row(self, row: List[str]):
-        """Display a row of the table."""
-        print("| {:<15} | {:<15} | {:<60} | {:<15} |".format(*row))
+from pydes.process.components import Component
+from pydes.process.monitor import Monitor, Record
 
 
 class PydesError(Exception):
@@ -137,11 +27,14 @@ class Simulator:
     def __init__(self, initial_time: float = 0, trace: bool = True):
         self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
         self._times = []
+        self._ctimes = count()
         self._monitor = Monitor(self, trace)
         self._init_time = initial_time
         self._now = initial_time
 
-    def record(self, component: Component, description: str, value: Any):
+    def record(
+        self, component: Component, description: str, value: Optional[Any] = None
+    ):
         """Record a simulation event.
 
         Args:
@@ -241,7 +134,7 @@ class Simulator:
         if cond:
             self._conds.append((who, cond))
         if when:
-            heappush(self._times, when)
+            heappush(self._times, (when, next(self._ctimes)))
 
     def now(self) -> float:
         """Return current simulation time."""
@@ -272,7 +165,7 @@ class Simulator:
                     return
                 # Do we still have process waiting for a new time?
                 if self._times:
-                    self._now = heappop(self._times)
+                    self._now, _ = heappop(self._times)
                     process = self.__pop()
                 # if not, the simulation is over
                 else:

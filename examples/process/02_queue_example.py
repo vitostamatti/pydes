@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from itertools import count
 from typing import List, Optional
 from pydes.process import Component, Simulator
