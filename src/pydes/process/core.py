@@ -5,6 +5,7 @@ from typing import Any, Callable, List, Optional, Tuple
 from greenlet import greenlet
 from dataclasses import dataclass
 from typing import Any, List
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -68,8 +69,8 @@ class Monitor:
         """Display a single record."""
         desc = (
             rec.description
-            if len(rec.description) < 60
-            else rec.description[:57] + "..."
+            if len(rec.description) < 40
+            else rec.description[:37] + "..."
         )
         row = [str(e) for e in [rec.time, rec.component, desc, rec.value]]
 
@@ -77,19 +78,18 @@ class Monitor:
 
     def _display_header(self):
         """Display the header for the table."""
-        colsize = [15, 15, 60, 15]
+        colsize = [30, 15, 40, 15]
         sep = ["-" * s for s in colsize]
         empty = [" " * s for s in colsize]
         row = ["time", "component", "description", "value"]
         self._display_row(sep)
         self._display_row(row)
         self._display_row(sep)
-
         self._display_row(empty)
 
     def _display_row(self, row: List[str]):
         """Display a row of the table."""
-        print("| {:<15} | {:<15} | {:<60} | {:<15} |".format(*row))
+        print("| {:<30} | {:<15} | {:<40} | {:<15} |".format(*row))
 
 
 class MetaComponent(type):
@@ -137,7 +137,7 @@ class Simulator:
         trace (bool): Indicates whether tracing is enabled or not.
     """
 
-    def __init__(self, initial_time: float = 0, trace: bool = True):
+    def __init__(self, initial_time: float | datetime = 0, trace: bool = True):
         self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
         self._times = []
         self._ctimes = count()
@@ -145,9 +145,7 @@ class Simulator:
         self._init_time = initial_time
         self._now = initial_time
 
-    def record(
-        self, component: Component, description: str, value: Optional[Any] = None
-    ):
+    def record(self, component: Component, description: str, value: Any | None = None):
         """Record a simulation event.
 
         Args:
@@ -161,7 +159,12 @@ class Simulator:
         """Get recorded simulation events."""
         return self._monitor.values()
 
-    def schedule(self, what: Component, at: float = None, after: float = None):
+    def schedule(
+        self,
+        what: Component,
+        at: float | timedelta | None = None,
+        after: float | timedelta | None = None,
+    ):
         """Launch a process.
 
         Activates a process either immediately (if both `at` and `after` are None) or after a delay.
@@ -182,7 +185,7 @@ class Simulator:
         # Add it to the event-queue and launch it as soon as possible.
         self._schedule(who=greenlet(main), cond=lambda: True)
 
-    def wait_for(self, cond: Callable[[], bool], until=None):
+    def wait_for(self, cond: Callable[[], bool], until: float | timedelta = None):
         """Wait for a condition to become true.
 
         Suspends this process until the condition becomes true.
@@ -201,7 +204,7 @@ class Simulator:
             self._schedule(cond=cond)
         self.next()
 
-    def sleep(self, duration: Optional[float] = None):
+    def sleep(self, duration: float | timedelta | None = None):
         """Sleep for the given duration.
 
         Args:
@@ -211,7 +214,7 @@ class Simulator:
             return
         self.sleep_until(self.now() + duration)
 
-    def sleep_until(self, until: Optional[float] = None):
+    def sleep_until(self, until: float | timedelta | None = None):
         """Sleep until the given simulation time.
 
         Args:
@@ -233,7 +236,7 @@ class Simulator:
         self,
         who: Optional[greenlet] = None,
         cond: Optional[Callable[[], bool]] = None,
-        when: Optional[float] = None,
+        when: float | timedelta | None = None,
     ):
         """Post a condition or a time.
 
@@ -249,7 +252,7 @@ class Simulator:
         if when:
             heappush(self._times, (when, next(self._ctimes)))
 
-    def now(self) -> float:
+    def now(self) -> float | datetime:
         """Return current simulation time."""
         return self._now
 
@@ -265,8 +268,12 @@ class Simulator:
                 return process
         return None
 
-    def run(self, until: float = inf):
+    def run(self, until: float | timedelta = None):
         """Start simulation."""
+        if isinstance(self._now, float):
+            until = inf
+        if isinstance(self._now, datetime):
+            until = datetime.max
         while True:
             # Is anybody wakeable?
             process = self.__pop()
@@ -296,3 +303,8 @@ class Simulator:
     def next(self):
         """Switch to the next awakeable process."""
         greenlet.getcurrent().parent.switch()
+
+    # def _check_time_type(self, time: float | timedelta):
+    # if type(self._now) != type(time):
+    # raise PydesError("Simulation time ")
+    # isinstance(self._now, datetime) and isinstance(time, timedelta)
