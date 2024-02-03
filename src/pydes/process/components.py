@@ -3,7 +3,7 @@ from typing import Any
 from pydes.process.core import Component, Simulator, PydesError
 
 
-class Resource(Component):
+class Event(Component):
     """Represents an event in the simulation.
 
     Args:
