@@ -1,39 +1,9 @@
 from math import inf
 from typing import Any
-from pydes.process import Simulator
-from pydes.process.core import PydesError
+from pydes.process.core import Component, Simulator, PydesError
 
 
-class MetaComponent(type):
-    """Metaclass used to track the number of instances of every component subclass."""
-
-    __component_instance_count = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls.__component_instance_count:
-            cls.__component_instance_count[cls] = 0
-        else:
-            cls.__component_instance_count[cls] += 1
-
-        instance = super().__call__(*args, **kwargs)
-
-        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
-
-        return instance
-
-
-class Component(metaclass=MetaComponent):
-    """Base class for components in the simulation."""
-
-    def main(self):
-        """Main method to be implemented by subclasses."""
-        pass
-
-    def __str__(self):
-        return self.__name__
-
-
-class Event(Component):
+class Resource(Component):
     """Represents an event in the simulation.
 
     Args:
@@ -47,7 +17,7 @@ class Event(Component):
     def set(self):
         """Set the event."""
         self._value = True
-        self._sim.wait_for(cond=lambda: self._value)
+        # self._sim.wait_for(cond=lambda: self._value)
 
     def wait(self):
         """Wait for the event to be set."""
@@ -76,7 +46,6 @@ class State(Component):
             value (Any): The new value of the state.
         """
         self._value = value
-        self._sim.wait_for(lambda: True)
 
     def wait(self, value: Any):
         """Wait for the state to become a specific value.
@@ -117,7 +86,6 @@ class Queue(Component):
             member (Any): The item to be put into the queue.
         """
         self._waiters.append(member)
-        self._sim.wait_for(lambda: True)
 
     def size(self) -> int:
         """Get the size of the queue.
@@ -151,9 +119,10 @@ class Resource(Component):
         """
         if self.is_idle():
             self._users.append(by)
-            self._sim.wait_for(lambda: True)
+            # self._sim.wait_for(lambda: True)
         else:
             self._sim.wait_for(lambda: self.is_idle())
+            self._users.append(by)
 
     def release(self, by: Component):
         """Release the resource.
@@ -166,7 +135,7 @@ class Resource(Component):
         """
         if by in self._users:
             self._users.remove(by)
-            self._sim.wait_for(lambda: True)
+            # self._sim.wait_for(lambda: True)
         else:
             raise PydesError(
                 f"{by} cannot release {self} because it has not been requested"
@@ -193,7 +162,7 @@ class Container(Component):
         capacity (Union[int, float], optional): The capacity of the container, default is 1.
     """
 
-    def __init__(self, sim: Simulator, capacity: int | float = 1) -> None:
+    def __init__(self, sim: Simulator, capacity: int | float = inf) -> None:
         self._sim = sim
         self._capacity = capacity
         self._level = 0
@@ -205,6 +174,7 @@ class Container(Component):
             amount (Union[int, float], optional): The amount to get from the container, default is 1.
         """
         self._sim.wait_for(lambda: self._can_get(amount))
+        self._level -= amount
 
     def put(self, amount: int | float = 1):
         """Put some amount into the container.
@@ -213,6 +183,7 @@ class Container(Component):
             amount (Union[int, float], optional): The amount to put into the container, default is 1.
         """
         self._sim.wait_for(lambda: self._can_put(amount))
+        self._level += amount
 
     def level(self) -> int:
         """Get the current level of the container."""
@@ -250,7 +221,7 @@ class Store(Component):
     def get(self) -> Any:
         """Get an item from the store."""
         self._sim.wait_for(lambda: self._can_get())
-        return self._items.pop()
+        return self._items.pop(0)
 
     def put(self, item: Any):
         """Put an item into the store.
@@ -260,7 +231,6 @@ class Store(Component):
         """
         self._sim.wait_for(lambda: self._can_put(item))
         self._items.append(item)
-        self._sim.wait_for(lambda: True)
 
     def level(self) -> int:
         """Get the current level of the store."""

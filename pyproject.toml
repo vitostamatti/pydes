@@ -17,9 +17,9 @@ dynamic = ["version"]
 version = { attr = "pydes.__version__" }
 
 [project.urls]
-# Homepage = "https://simpy.readthedocs.io"
-# Documentation = "https://simpy.readthedocs.io"
-# "Source code" = "https://gitlab.com/team-simpy/simpy/"
+# Homepage = "https://pydes.readthedocs.io"
+# Documentation = "https://pydes.readthedocs.io"
+# "Source code" = "https://gitlab.com/team-pydes/pydes/"
 
 [tool.setuptools]
 license-files = ["LICENSE.txt"]
