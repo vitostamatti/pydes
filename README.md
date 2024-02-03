@@ -1,7 +1,7 @@
 # Discrete Event Simulation Framework in Python
 
 ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
-
+![docs](https://github.com/vitostamatti/pydes/actions/workflows/docs.yml/badge.svg)
 
 ## Todos/Ideas
 - add docs
