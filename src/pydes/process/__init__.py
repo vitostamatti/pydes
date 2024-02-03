@@ -9,7 +9,7 @@ from pydes.process.components import (
     Queue,
     Resource,
     State,
-    Resource,
+    Event,
     Store,
 )
 
@@ -25,7 +25,7 @@ __all__ = [
     "Component",
     "Container",
     "Queue",
-    "Resource",
+    "Event",
     "State",
     "Resource",
     "Store",

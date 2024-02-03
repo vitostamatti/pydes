@@ -6,7 +6,8 @@
 ## Todos/Ideas
 - add datetime functionalities
 - add "speed" to the simulation
-- components modules such as: Queue, Resource, State, Event, Container, Server, Source, Sink ...
-- create a module for Network (nodes and links)
-- generate components with cli tool for faster developement and automatic boilerplate
+- add records on predifined components
+- add more components: Server, Source, Sink ...
+- create a module for Network (nodes and links) components
+- generate components with cli tool for faster developement and automatic boilerplate (other new package)
 - dependency injection
