@@ -1,130 +1,15 @@
+"""
+This is the pydes.process.core module
+"""
+
 from heapq import heappush, heappop
 from itertools import count
 from math import inf
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple, Union
 from greenlet import greenlet
 from dataclasses import dataclass
-from typing import Any, List
+
 from datetime import datetime, timedelta
-
-
-@dataclass
-class Record:
-    """Stores information about a simulation event."""
-
-    time: float
-    component: str
-    description: str
-    value: Any
-
-
-class Monitor:
-    """Stores values which change during simulation.
-
-    Args:
-        sim (Simulator): The simulator instance.
-        trace (bool): Indicates whether tracing is enabled or not.
-    """
-
-    def __init__(self, sim: "Simulator", trace: bool):
-        self._sim = sim
-        self._trace = trace
-        self._values: List[Record] = []
-
-    def reset(self):
-        self._values = []
-
-    def record(
-        self, component: "Component", description: str, value: Any | None = None
-    ):
-        """Record a simulation event.
-
-        Args:
-            component (Component): The component associated with the event.
-            description (str): Description of the event.
-            value (Any): Value associated with the event.
-        """
-        rec = Record(
-            time=self._sim.now(),
-            component=str(component),
-            description=description,
-            value=value,
-        )
-        if self._trace:
-            self._display(rec)
-
-        self._values.append(rec)
-
-    def values(self) -> List[Record]:
-        """Get recorded simulation events."""
-        return self._values
-
-    def _display(self, rec):
-        """Display a recorded event."""
-        if len(self._values) == 0:
-            self._display_header()
-        self._display_record(rec)
-
-    def _display_record(self, rec: Record):
-        """Display a single record."""
-        desc = (
-            rec.description
-            if len(rec.description) < 40
-            else rec.description[:37] + "..."
-        )
-        row = [str(e) for e in [rec.time, rec.component, desc, rec.value]]
-
-        self._display_row(row)
-
-    def _display_header(self):
-        """Display the header for the table."""
-        colsize = [30, 15, 40, 15]
-        sep = ["-" * s for s in colsize]
-        empty = [" " * s for s in colsize]
-        row = ["time", "component", "description", "value"]
-        self._display_row(sep)
-        self._display_row(row)
-        self._display_row(sep)
-        self._display_row(empty)
-
-    def _display_row(self, row: List[str]):
-        """Display a row of the table."""
-        print("| {:<30} | {:<15} | {:<40} | {:<15} |".format(*row))
-
-
-class MetaComponent(type):
-    """Metaclass used to track the number of instances of every component subclass."""
-
-    __component_instance_count = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls.__component_instance_count:
-            cls.__component_instance_count[cls] = 0
-        else:
-            cls.__component_instance_count[cls] += 1
-
-        instance = super().__call__(*args, **kwargs)
-
-        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
-
-        return instance
-
-
-class Component(metaclass=MetaComponent):
-    """Base class for components in the simulation."""
-
-    def main(self):
-        """Main method to be implemented by subclasses."""
-        pass
-
-    def __str__(self):
-        return self.__name__
-
-
-class PydesError(Exception):
-    """Custom pydes exception for simulation errors"""
-
-    pass
 
 
 class Simulator:
@@ -133,35 +18,37 @@ class Simulator:
     Decides who will run next. Processes post conditions and times they are interested in.
 
     Args:
-        initial_time (float): The initial simulation time.
-        trace (bool): Indicates whether tracing is enabled or not.
+        initial_time: The initial simulation time specified as a float or datetime object.
+        trace: Indicates whether tracing is enabled or not.
     """
 
     def __init__(self, initial_time: float | datetime = 0, trace: bool = True):
-        self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
+        self._conds: list[Tuple[greenlet, Callable[[], bool]]] = []
         self._times = []
         self._ctimes = count()
         self._monitor = Monitor(self, trace)
         self._init_time = initial_time
         self._now = initial_time
 
-    def record(self, component: Component, description: str, value: Any | None = None):
+    def record(
+        self, component: "Component", description: str, value: Any | None = None
+    ):
         """Record a simulation event.
 
         Args:
-            component (Component): The component associated with the event.
-            description (str): Description of the event.
-            value (Any): Value associated with the event.
+            component: The component associated with the event.
+            description: Description of the event.
+            value: Value associated with the event.
         """
         self._monitor.record(component, description, value)
 
-    def records(self) -> List[Record]:
+    def records(self) -> list["Record"]:
         """Get recorded simulation events."""
         return self._monitor.values()
 
     def schedule(
         self,
-        what: Component,
+        what: "Component",
         at: float | timedelta | None = None,
         after: float | timedelta | None = None,
     ):
@@ -256,7 +143,7 @@ class Simulator:
         """Return current simulation time."""
         return self._now
 
-    def __pop(self) -> Optional[greenlet]:
+    def _pop(self) -> Optional[greenlet]:
         """Pops out a process which may run *now*.
 
         Returns:
@@ -276,7 +163,7 @@ class Simulator:
             until = datetime.max
         while True:
             # Is anybody wakeable?
-            process = self.__pop()
+            process = self._pop()
 
             # Advance time & retry
             while process == None:
@@ -286,7 +173,7 @@ class Simulator:
                 # Do we still have process waiting for a new time?
                 if self._times:
                     self._now, _ = heappop(self._times)
-                    process = self.__pop()
+                    process = self._pop()
                 # if not, the simulation is over
                 else:
                     return
@@ -295,7 +182,7 @@ class Simulator:
             # Back to scheduling
 
     def reset(self):
-        self._conds: List[Tuple[greenlet, Callable[[], bool]]] = []
+        self._conds: list[Tuple[greenlet, Callable[[], bool]]] = []
         self._times = []
         self._monitor.reset()
         self._now = self._init_time
@@ -308,3 +195,122 @@ class Simulator:
     # if type(self._now) != type(time):
     # raise PydesError("Simulation time ")
     # isinstance(self._now, datetime) and isinstance(time, timedelta)
+
+
+@dataclass
+class Record:
+    """Stores information about a simulation event."""
+
+    time: float
+    component: str
+    description: str
+    value: Any
+
+
+class Monitor:
+    """Stores values which change during simulation.
+
+    Args:
+        sim (Simulator): The simulator instance.
+        trace (bool): Indicates whether tracing is enabled or not.
+    """
+
+    def __init__(self, sim: "Simulator", trace: bool):
+        self._sim = sim
+        self._trace = trace
+        self._values: list[Record] = []
+
+    def reset(self):
+        self._values = []
+
+    def record(
+        self, component: "Component", description: str, value: Any | None = None
+    ):
+        """Record a simulation event.
+
+        Args:
+            component (Component): The component associated with the event.
+            description (str): Description of the event.
+            value (Any): Value associated with the event.
+        """
+        rec = Record(
+            time=self._sim.now(),
+            component=str(component),
+            description=description,
+            value=value,
+        )
+        if self._trace:
+            self._display(rec)
+
+        self._values.append(rec)
+
+    def values(self) -> list[Record]:
+        """Get recorded simulation events."""
+        return self._values
+
+    def _display(self, rec):
+        """Display a recorded event."""
+        if len(self._values) == 0:
+            self._display_header()
+        self._display_record(rec)
+
+    def _display_record(self, rec: Record):
+        """Display a single record."""
+        desc = (
+            rec.description
+            if len(rec.description) < 40
+            else rec.description[:37] + "..."
+        )
+        row = [str(e) for e in [rec.time, rec.component, desc, rec.value]]
+
+        self._display_row(row)
+
+    def _display_header(self):
+        """Display the header for the table."""
+        colsize = [30, 15, 40, 15]
+        sep = ["-" * s for s in colsize]
+        empty = [" " * s for s in colsize]
+        row = ["time", "component", "description", "value"]
+        self._display_row(sep)
+        self._display_row(row)
+        self._display_row(sep)
+        self._display_row(empty)
+
+    def _display_row(self, row: list[str]):
+        """Display a row of the table."""
+        print("| {:<30} | {:<15} | {:<40} | {:<15} |".format(*row))
+
+
+class _MetaComponent(type):
+    """Metaclass used to track the number of instances of every component subclass."""
+
+    __component_instance_count = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls.__component_instance_count:
+            cls.__component_instance_count[cls] = 0
+        else:
+            cls.__component_instance_count[cls] += 1
+
+        instance = super().__call__(*args, **kwargs)
+
+        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
+
+        return instance
+
+
+class Component(metaclass=_MetaComponent):
+    """Base class for components in the simulation."""
+
+    def main(self):
+        """Main method to be implemented by subclasses."""
+        pass
+
+    def __str__(self):
+        return self.__name__
+
+
+class PydesError(Exception):
+    """Custom pydes exception for simulation errors"""
+
+    pass

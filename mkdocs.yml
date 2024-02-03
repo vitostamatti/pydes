@@ -1,0 +1,41 @@
+site_name: pydes
+
+theme:
+  name: "material"
+  palette:
+    scheme: slate
+
+plugins:
+  - search:
+  - gen-files:
+      scripts:
+      - scripts/gen_ref_pages.py  
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: false
+            merge_init_into_class: true
+            members_order: source
+            allow_inspection: true  
+  #         # paths: [src]
+  #         show_bases: true
+  #         # parameter_headings: true
+  #         # heading_level: 3
+  - section-index:
+nav:
+  - index.md
+  - Overview: overview.md
+  - Examples: examples.md
+  - Reference: reference/
+    # - pydes-events: 
+    # # reference/pydes/events/__init__.md
+    #   - core: reference/pydes/events/core.md
+    # - pydes-process: 
+    #   - core: reference/pydes/process/core.md
+    #   - components: reference/pydes/process/components.md
+
+  # - Reference: reference.md
