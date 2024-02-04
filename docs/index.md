@@ -5,7 +5,7 @@
 
 # Welcome to Py-DES
 
-**py-des** is a Python package designed to simplify the process of discrete event simulation, providing users with an intuitive and efficient framework for modeling and analyzing complex systems. Built upon the principles of simplicity, flexibility, and performance, **py-des** aims to offer a streamlined solution for simulation tasks across various domains, including operations research, computer science, and manufacturing.
+**py-des** is a Python package designed to simplify the process of discrete event simulation, providing users with an intuitive and efficient framework for modeling and analyzing complex systems. Built upon the principles of simplicity and flexibility, **py-des** aims to offer a streamlined solution for simulation tasks across various domains, including operations research, computer science, and manufacturing.
 
 ## Key Principles
 
@@ -19,7 +19,7 @@
 To begin using **py-des**, simply install the package via pip (_comming soon_):
 
 ```bash
-pip install py-des
+pip install py-des-lib
 ```
 
 First define your main process extending the `Component` and defining a `main` method. 
@@ -33,9 +33,9 @@ class Process(Component):
 
     def main(self):
         for _ in range(10):
-            self.sim.record(self, "waiting", 1)
+            print(self.sim.now(),"waiting")
             self.sim.sleep(2)
-            self.sim.record(self, "waiting", 0)
+            print(self.sim.now(),"waiting")
 ```
 
 Now schedule the main process object and run simulation
@@ -47,7 +47,9 @@ sim.schedule(p)
 sim.run()
 ```
 
-Start your journey in the [overview](overview.md) section or check out the [examples](examples.md) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
+If you are interested in learning about what is Discrete Event Simulation you can start your journey in the [overview](overview.md) section.
+
+If you want some hands-on leraning experience, you can check out the [quick-start](quick-start.md) and [examples](./examples/index.md) sections for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
 
 
 ## Feedback and Support

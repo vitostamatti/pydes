@@ -7,7 +7,7 @@ In this sectrion we’ll explore the Py-DES basic ojjects and its main capabilit
 Easiest way to setup Py-DES is to install it using `pip` with the following command.
 
 ```bash
-$ pip install py-des
+$ pip install py-des-lib
 ```
 
 ## Hello-World
@@ -68,7 +68,7 @@ sim.run()
         - __init__
 
 
-## Predefined Components
+<!-- ## Predefined Components
 
 :::pydes.Queue
     options:
@@ -76,4 +76,4 @@ sim.run()
         show_root_toc_entry: false
         show_root_heading: true
         members:
-        - __init__
+        - __init__ -->

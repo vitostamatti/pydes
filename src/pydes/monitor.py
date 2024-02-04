@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 from typing import TYPE_CHECKING
 
@@ -8,16 +9,50 @@ if TYPE_CHECKING:
 
 @dataclass
 class Record:
-    """Stores information about a simulation event."""
+    """Stores information about a simulation event.
 
-    time: float
-    component: str
+    Args:
+        time (float | datetime): simulation time.
+        component (Component): The component instance.
+        value (Any): the event value to record
+        description (str|None): optional description of the recorded event
+    """
+
+    time: float | datetime
+    component: "Component"
     value: Any
     description: str | None
 
 
 class Monitor:
-    """Stores values which change during simulation.
+    """
+    The `Monitor` is simply a convenient class to record different events or moments
+    during the simulation. Simulation without data analytics is useless.
+
+    The `Monitor` is used internally by the `Simulator` and is not ment to be used outside this context.
+
+    To record an event you simply have to call the `record` method o the simulator and pass 2 required
+    parameters and optionally a third one.
+
+    ```python
+    from pydes.process import Component, Simulator
+
+    class Process(Component):
+        def __init__(self, sim: Simulator):
+            self.sim = sim
+
+        def main(self):
+            for _ in range(10):
+                self.sim.record(self,"start waiting")
+                self.sim.sleep(2)
+                self.sim.record(self,"end waiting","this is an aditional description)
+    ```
+
+    When the simulation runs, you'll see all you recorded events printed out. Besides, these records
+    can be retreived for further analysis using the `records` from the `Simulator`.
+
+    To turn off the printing of the records during simulation, you can pass 'trace=False' to the `Simulator`
+    constructor.
 
     Args:
         sim: The simulator instance.
@@ -47,7 +82,7 @@ class Monitor:
         """
         rec = Record(
             time=self._sim.now(),
-            component=str(component),
+            component=component,
             value=value,
             description=description,
         )

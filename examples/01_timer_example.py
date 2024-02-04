@@ -1,3 +1,4 @@
+# --8<-- [start:example]
 from pydes import Component, Simulator
 
 
@@ -35,13 +36,18 @@ class Timer2(Component):
         self.sim.schedule(self)
 
 
-if __name__ == "__main__":
-    sim = Simulator()
-    timer = Timer1(sim, time=10)
-    sim.schedule(timer)
-    sim.run(100)
+# --8<-- [end:example]
 
-    sim.reset()
-    timer = Timer2(sim, time=10)
-    sim.schedule(timer)
-    sim.run(100)
+
+# --8<-- [start:run-example]
+print("Timer 1")
+sim = Simulator()
+timer = Timer1(sim, time=10)
+sim.schedule(timer)
+sim.run(30)
+print("Timer 2")
+sim.reset()
+timer = Timer2(sim, time=10)
+sim.schedule(timer)
+sim.run(30)
+# --8<-- [end:run-example]

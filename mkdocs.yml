@@ -56,7 +56,9 @@ nav:
   - index.md
   - Overview: overview.md
   - Quick Start: quick-start.md
-  - Examples: examples.md
+  - Examples: 
+    - ./examples/index.md
+    - ./examples/timer-example.md
   - Reference: reference/
     # - py-des-events: 
     # # reference/py-des/events/__init__.md

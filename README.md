@@ -30,7 +30,7 @@
 To begin using **py-des**, simply install the package via pip (_comming soon_):
 
 ```bash
-pip install py-des
+pip install py-des-lib
 ```
 
 First define your main process extending the `Component` and defining a `main` method. 
@@ -59,6 +59,7 @@ sim.run()
 ```
 
 Start your journey looking at the documentation in the [quick-start](https://vitostamatti.github.io/pydes/quick-start/) section or check out the [examples](https://vitostamatti.github.io/pydes/examples/) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
+
 
 
 ## Feedback and Support
