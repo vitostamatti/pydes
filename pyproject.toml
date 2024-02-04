@@ -3,7 +3,7 @@ requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pydes"
+name = "py-des"
 description = "Event discrete, process based simulation for Python."
 readme = "README.md"
 license = { text = "MIT" }

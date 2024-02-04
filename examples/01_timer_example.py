@@ -1,4 +1,4 @@
-from pydes.process import *
+from pydes import Component, Simulator
 
 
 class Timer1(Component):

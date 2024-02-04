@@ -5,21 +5,46 @@ This is the pydes.process.core module
 from heapq import heappush, heappop
 from itertools import count
 from math import inf
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, Tuple
 from greenlet import greenlet
-from dataclasses import dataclass
-
 from datetime import datetime, timedelta
+from pydes.monitor import Monitor, Record
 
 
 class Simulator:
-    """Implements the simulator's business logic.
+    """
+    `Simulator` is the central object of Py-DES and is used to model all the process and events of the system.
 
-    Decides who will run next. Processes post conditions and times they are interested in.
+    Its main objective is to schedule process and events and then execute them in a time-ordered way.
 
     Args:
         initial_time: The initial simulation time specified as a float or datetime object.
         trace: Indicates whether tracing is enabled or not.
+
+    Simulators can be instantiated either using numeric time (float or int) or datetime time.
+
+    To create a `Simulator` with numeric time units simply ommit the argument or pass a specific
+    `until` argument.
+    ```python
+    sim = Simulator(until=10)
+    ```
+
+    If you prefer to use datetime objects, you can pass to the until argument a `datetime` object.
+
+    ```python
+    from datetime import datetime
+    sim = Simulator(until=datetime.max)
+    ```
+
+    Once you created the `Simulator` object you can start modeling your procesess using its differents methods.
+
+    Methods:
+        sleep: Sleep for the given duration.
+        wait_for: Suspends the process until a condition becomes true.
+        sleep_until: Sleep until the given simulation time.
+        schedule: Activates a process either immediately (if both `at` and `after` are None) or after a delay.
+        run: Starts simulation.
+
     """
 
     def __init__(self, initial_time: float | datetime = 0, trace: bool = True):
@@ -31,19 +56,23 @@ class Simulator:
         self._now = initial_time
 
     def record(
-        self, component: "Component", description: str, value: Any | None = None
+        self, component: "Component", value: Any, description: str | None = None
     ):
         """Record a simulation event.
 
         Args:
             component: The component associated with the event.
-            description: Description of the event.
             value: Value associated with the event.
+            description: Description of the event.
         """
-        self._monitor.record(component, description, value)
+        self._monitor.record(component, value, description)
 
-    def records(self) -> list["Record"]:
-        """Get recorded simulation events."""
+    def records(self) -> list[Record]:
+        """Get recorded simulation events.
+
+        Returns:
+            list of `Record` objects
+        """
         return self._monitor.values()
 
     def schedule(
@@ -57,16 +86,17 @@ class Simulator:
         Activates a process either immediately (if both `at` and `after` are None) or after a delay.
 
         Args:
-            what (Component): A class having a main() method.
-            at (float): Simulation time to activate the process, default is None.
-            after (float): Delay activation with specified time, default is None.
+            what: A class having a main() method.
+            at: Simulation time to activate the process, default is None.
+            after: Delay activation with specified time, default is None.
+
         """
 
         def main():
             self.sleep_until(at)
             self.sleep(after)
             what.main()
-            self.next()  # switch to another greenlet, or else execution "fall"
+            self._next()  # switch to another greenlet, or else execution "fall"
             # is resumed from the parent's last switch()
 
         # Add it to the event-queue and launch it as soon as possible.
@@ -78,10 +108,10 @@ class Simulator:
         Suspends this process until the condition becomes true.
 
         Args:
-            cond (Callable[[], bool]): Function to test.
-            until (float): Maximum simulation time to wait for condition to become true, default is None.
+            cond: Function to test.
+            until: Maximum simulation time to wait for condition to become true, default is None.
         """
-        if until != None:
+        if until is not None:
             if until < self.now():
                 raise PydesError(
                     f"{until} cannot be smaller than current time {self.now()}"
@@ -89,15 +119,15 @@ class Simulator:
             self._schedule(cond=lambda: cond() or (self.now() == until), when=until)
         else:
             self._schedule(cond=cond)
-        self.next()
+        self._next()
 
     def sleep(self, duration: float | timedelta | None = None):
         """Sleep for the given duration.
 
         Args:
-            duration (float): Duration to sleep for.
+            duration: Duration to sleep for.
         """
-        if duration == None:
+        if duration is None:
             return
         self.sleep_until(self.now() + duration)
 
@@ -105,9 +135,9 @@ class Simulator:
         """Sleep until the given simulation time.
 
         Args:
-            until (float): Simulation time to sleep until.
+            until: Simulation time to sleep until.
         """
-        if until == None:
+        if until is None:
             return
         if until == self.now():
             return
@@ -117,22 +147,22 @@ class Simulator:
                 f"{until} cannot be smaller than current time {self.now()}"
             )
         self._schedule(cond=lambda: self.now() == until, when=until)
-        self.next()
+        self._next()
 
     def _schedule(
         self,
-        who: Optional[greenlet] = None,
-        cond: Optional[Callable[[], bool]] = None,
+        who: greenlet | None = None,
+        cond: Callable[[], bool] | None = None,
         when: float | timedelta | None = None,
     ):
         """Post a condition or a time.
 
         Args:
-            who (greenlet, optional): Greenlet object, default is None.
-            cond (Callable[[], bool], optional): Condition to post, default is None.
-            when (float, optional): Time to post the condition, default is None.
+            who: Greenlet object, default is None.
+            cond: Condition to post, default is None.
+            when: Time to post the condition, default is None.
         """
-        if who == None:
+        if who is None:
             who = greenlet.getcurrent()
         if cond:
             self._conds.append((who, cond))
@@ -140,10 +170,14 @@ class Simulator:
             heappush(self._times, (when, next(self._ctimes)))
 
     def now(self) -> float | datetime:
-        """Return current simulation time."""
+        """Return current simulation time.
+
+        Returns:
+            current time expressed as float or datetime depending on the initial simulation time.
+        """
         return self._now
 
-    def _pop(self) -> Optional[greenlet]:
+    def _pop(self) -> greenlet | None:
         """Pops out a process which may run *now*.
 
         Returns:
@@ -155,18 +189,18 @@ class Simulator:
                 return process
         return None
 
-    def run(self, until: float | timedelta = None):
-        """Start simulation."""
-        if isinstance(self._now, float):
-            until = inf
-        if isinstance(self._now, datetime):
-            until = datetime.max
+    def run(self, until: float | timedelta = inf):
+        """Start simulation.
+
+        Args:
+            until: maximum simulation time expressed as datetime or float.
+        """
         while True:
             # Is anybody wakeable?
             process = self._pop()
 
             # Advance time & retry
-            while process == None:
+            while process is None:
                 # if we reached the max running time we return and end simulation
                 if self._now >= until:
                     return
@@ -187,98 +221,9 @@ class Simulator:
         self._monitor.reset()
         self._now = self._init_time
 
-    def next(self):
+    def _next(self):
         """Switch to the next awakeable process."""
         greenlet.getcurrent().parent.switch()
-
-    # def _check_time_type(self, time: float | timedelta):
-    # if type(self._now) != type(time):
-    # raise PydesError("Simulation time ")
-    # isinstance(self._now, datetime) and isinstance(time, timedelta)
-
-
-@dataclass
-class Record:
-    """Stores information about a simulation event."""
-
-    time: float
-    component: str
-    description: str
-    value: Any
-
-
-class Monitor:
-    """Stores values which change during simulation.
-
-    Args:
-        sim (Simulator): The simulator instance.
-        trace (bool): Indicates whether tracing is enabled or not.
-    """
-
-    def __init__(self, sim: "Simulator", trace: bool):
-        self._sim = sim
-        self._trace = trace
-        self._values: list[Record] = []
-
-    def reset(self):
-        self._values = []
-
-    def record(
-        self, component: "Component", description: str, value: Any | None = None
-    ):
-        """Record a simulation event.
-
-        Args:
-            component (Component): The component associated with the event.
-            description (str): Description of the event.
-            value (Any): Value associated with the event.
-        """
-        rec = Record(
-            time=self._sim.now(),
-            component=str(component),
-            description=description,
-            value=value,
-        )
-        if self._trace:
-            self._display(rec)
-
-        self._values.append(rec)
-
-    def values(self) -> list[Record]:
-        """Get recorded simulation events."""
-        return self._values
-
-    def _display(self, rec):
-        """Display a recorded event."""
-        if len(self._values) == 0:
-            self._display_header()
-        self._display_record(rec)
-
-    def _display_record(self, rec: Record):
-        """Display a single record."""
-        desc = (
-            rec.description
-            if len(rec.description) < 40
-            else rec.description[:37] + "..."
-        )
-        row = [str(e) for e in [rec.time, rec.component, desc, rec.value]]
-
-        self._display_row(row)
-
-    def _display_header(self):
-        """Display the header for the table."""
-        colsize = [30, 15, 40, 15]
-        sep = ["-" * s for s in colsize]
-        empty = [" " * s for s in colsize]
-        row = ["time", "component", "description", "value"]
-        self._display_row(sep)
-        self._display_row(row)
-        self._display_row(sep)
-        self._display_row(empty)
-
-    def _display_row(self, row: list[str]):
-        """Display a row of the table."""
-        print("| {:<30} | {:<15} | {:<40} | {:<15} |".format(*row))
 
 
 class _MetaComponent(type):
@@ -300,7 +245,42 @@ class _MetaComponent(type):
 
 
 class Component(metaclass=_MetaComponent):
-    """Base class for components in the simulation."""
+    """
+    Base class for components in the simulation.
+
+    All subclasses of `Component` can define a `main` method which is the
+    underlying process that this `Component` is going to be excecuting.
+
+    Once the `main` method is defined, this component can be scheduled into the
+    simulation using the `schedule` method of `Simulator`
+
+    ```python
+    from pydes.process import Component, Simulator
+
+    # define the component with a main method
+    class Process(Component):
+        def __init__(self, sim: Simulator):
+            self.sim = sim
+
+        def main(self):
+            for _ in range(10):
+                print(self.sim.now(),"waiting")
+                self.sim.sleep(2)
+                print(self.sim.now(),"waiting")
+
+    # create the simulator object
+    sim = Simulator()
+
+    # create an instance of the Component
+    process = Process(sim)
+
+    # schedule the process in the simulator
+    sim.schedule(process)
+
+    # now you can run the simulation
+    sim.run()
+    ```
+    """
 
     def main(self):
         """Main method to be implemented by subclasses."""

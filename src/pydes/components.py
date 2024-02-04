@@ -1,6 +1,6 @@
 from math import inf
 from typing import Any
-from pydes.process.core import Component, Simulator, PydesError
+from pydes.core import Component, Simulator, PydesError
 
 
 class Event(Component):

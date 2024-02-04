@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import random
-from pydes.process import Component, Container
-from pydes.process import Simulator
+from pydes import Component, Container
+from pydes import Simulator
 
 
 class Process1(Component):

@@ -1,13 +1,12 @@
-from dataclasses import dataclass
 from itertools import count
 from typing import List, Optional
-from pydes.events import Event, Simulator
+from pydes import Component, Simulator
 import random
 
 
-@dataclass
-class Customer:
-    id: int
+class Customer(Component):
+    def __init__(self, id: int):
+        self.id = id
 
 
 class Queue:
@@ -27,27 +26,30 @@ class Queue:
         return len(self.elements)
 
 
-class Generator(Event):
-    def __init__(self, queue: Queue):
+class Generator(Component):
+    def __init__(self, sim: Simulator, queue: Queue):
+        self.sim = sim
         self.queue = queue
         self.count = count()
 
-    def trigger(self, sim: Simulator):
+    def main(self):
         customer = Customer(next(self.count))
-        print(f"{sim.now():.2f} - {customer} arrived")
+        print(f"{self.sim.now():.2f} - {customer} arrived")
         self.queue.put(customer)
         delay = random.expovariate(lambd=8.0)
-        sim.schedule(self, delay)
+        self.sim.sleep(delay)
+        self.sim.schedule(self)
 
 
-class Server(Event):
-    def __init__(self, queue: Queue):
+class Server(Component):
+    def __init__(self, sim: Simulator, queue: Queue):
+        self.sim = sim
         self.queue = queue
         self.current_customer: Optional[Customer] = None
 
-    def trigger(self, sim: Simulator):
+    def main(self):
         if self.current_customer:
-            print(f"{sim.now():.2f} - Finished serving {self.current_customer}")
+            print(f"{self.sim.now():.2f} - Finished serving {self.current_customer}")
         self.current_customer = None
         if self.queue.size() > 0:
             customer = self.queue.get()
@@ -55,19 +57,20 @@ class Server(Event):
 
     def serve_customer(self, sim: Simulator, customer: Customer):
         self.current_customer = customer
-        print(f"{sim.now():.2f} - Started serving {self.current_customer}")
+        print(f"{self.sim.now():.2f} - Started serving {self.current_customer}")
         service_time = random.expovariate(1.0)
-        sim.schedule(self, service_time)
+        self.sim.sleep(service_time)
+        self.sim.schedule(self)
 
     def is_available(self) -> bool:
         return self.current_customer == None
 
 
 if __name__ == "__main__":
+    sim = Simulator()
     queue = Queue()
-    generator = Generator(queue)
-    server = Server(queue)
-    sim = Simulator(0.0)
+    generator = Generator(sim, queue)
+    server = Server(sim, queue)
     sim.schedule(generator)
     sim.schedule(server)
     sim.run(until=10)

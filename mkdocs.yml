@@ -1,9 +1,21 @@
-site_name: pydes
+site_name: Py-DES
 
 theme:
+  logo: assets/pydes-logo.png
   name: "material"
   palette:
     scheme: slate
+    primary: black
+    accent: indigo
+  features:
+    - content.code.copy  
+    # - navigation.tabs
+  icon:
+    repo: fontawesome/brands/git-alt 
+
+repo_url: https://github.com/vitostamatti/pydes
+repo_name: vitostamatti/pydes
+
 
 plugins:
   - search:
@@ -17,25 +29,40 @@ plugins:
       handlers:
         python:
           options:
+            # summary: true
+            # show_category_heading: true
+            show_docstring_functions: true
+            show_symbol_type_toc: true
+            show_symbol_type_heading: true
             show_source: false
             merge_init_into_class: true
             members_order: source
-            allow_inspection: true  
-  #         # paths: [src]
-  #         show_bases: true
-  #         # parameter_headings: true
-  #         # heading_level: 3
+            # allow_inspection: true  
   - section-index:
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+
+
 nav:
   - index.md
   - Overview: overview.md
+  - Quick Start: quick-start.md
   - Examples: examples.md
   - Reference: reference/
-    # - pydes-events: 
-    # # reference/pydes/events/__init__.md
-    #   - core: reference/pydes/events/core.md
-    # - pydes-process: 
-    #   - core: reference/pydes/process/core.md
-    #   - components: reference/pydes/process/components.md
+    # - py-des-events: 
+    # # reference/py-des/events/__init__.md
+    #   - core: reference/py-des/events/core.md
+    # - py-des-process: 
+    #   - core: reference/py-des/process/core.md
+    #   - components: reference/py-des/process/components.md
 
   # - Reference: reference.md
