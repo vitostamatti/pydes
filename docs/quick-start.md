@@ -1,6 +1,6 @@
 # Discrete Event Simulation in Python with Py-DES
 
-In this set of examples, we’ll explore the Py-DES library and its main capabilities. 
+In this sectrion we’ll explore the Py-DES basic ojjects and its main capabilities. 
 
 ## Setup
 
