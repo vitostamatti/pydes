@@ -3,7 +3,7 @@
 
 <p align="center">
   <a href="" rel="noopener">
- <img src="./docs/assets/pydes.png" alt="Project logo"></a>
+ <img src="https://vitostamatti.github.io/pydes/assets/pydes.png" alt="Project logo"></a>
 </p>
 
 <div align="center">
