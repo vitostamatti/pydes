@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import random
-from pydes.process import Component, Queue
-from pydes.process import Simulator
+from pydes import Component, Queue
+from pydes import Simulator
 
 
 @dataclass

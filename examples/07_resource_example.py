@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-import random
-from pydes.process import Simulator, Component, Resource
+from pydes import Simulator, Component, Resource
 
 
 class Process1(Component):

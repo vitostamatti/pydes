@@ -1,5 +1,5 @@
 from enum import Enum
-from pydes.process import Component, Simulator, State
+from pydes import Component, Simulator, State
 
 
 class States(Enum):

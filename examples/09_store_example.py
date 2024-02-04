@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-import random
-from pydes.process import Component, Store
-from pydes.process import Simulator
+from pydes import Component, Store
+from pydes import Simulator
 
 
 @dataclass
