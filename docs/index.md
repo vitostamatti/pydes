@@ -25,7 +25,7 @@ pip install py-des
 First define your main process extending the `Component` and defining a `main` method. 
 
 ```py
-from pydes.process import Component, Simulator
+from pydes import Component, Simulator
 
 class Process(Component):
     def __init__(self, sim: Simulator):

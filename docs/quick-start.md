@@ -14,7 +14,7 @@ $ pip install py-des
 
 
 ```py
-from pydes.process import Component, Simulator
+from pydes import Component, Simulator
 
 class Process(Component):
     def __init__(self, sim: Simulator):
@@ -38,7 +38,7 @@ sim.run()
 
 ## Simulator Object
 
-:::pydes.process.Simulator
+:::pydes.Simulator
     options:
         show_object_full_path: false
         show_root_toc_entry: false
@@ -49,7 +49,7 @@ sim.run()
 
 ## Component Object
 
-:::pydes.process.Component
+:::pydes.Component
     options:
         show_object_full_path: false
         show_root_toc_entry: false
@@ -59,7 +59,7 @@ sim.run()
 
 ## Recording Events
 
-:::pydes.process.Monitor
+:::pydes.Monitor
     options:
         show_object_full_path: false
         show_root_toc_entry: false
@@ -70,16 +70,10 @@ sim.run()
 
 ## Predefined Components
 
-:::pydes.process.components.Queue
+:::pydes.Queue
     options:
         show_object_full_path: false
         show_root_toc_entry: false
         show_root_heading: true
         members:
         - __init__
-  
-<!--   
-        <!-- - Store
-        - State
-        - Container
-        - Resource -->
