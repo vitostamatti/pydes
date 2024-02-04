@@ -10,7 +10,7 @@
 
   ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
   ![docs](https://github.com/vitostamatti/pydes/actions/workflows/docs.yml/badge.svg)
-
+  [![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
 </div>
 
 
