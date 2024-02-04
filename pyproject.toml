@@ -8,18 +8,36 @@ description = "Event discrete, process based simulation for Python."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Vito Stamatti", email = "vitostamatti@gmail.com" }]
-classifiers = []
+
 dependencies = ["greenlet"]
 requires-python = ">= 3.10"
 dynamic = ["version"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Scientific/Engineering",
+]
+
 
 [tool.setuptools.dynamic]
 version = { attr = "pydes.__version__" }
 
 [project.urls]
-# Homepage = "https://pydes.readthedocs.io"
-# Documentation = "https://pydes.readthedocs.io"
-# "Source code" = "https://gitlab.com/team-pydes/pydes/"
+Homepage = "https://vitostamatti.github.io/pydes/"
+Documentation = "https://vitostamatti.github.io/pydes/"
+"Source code" = "https://github.com/vitostamatti/pydes"
 
 [tool.setuptools]
 license-files = ["LICENSE.txt"]
