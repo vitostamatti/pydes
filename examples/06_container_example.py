@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-import random
 from pydes import Component, Container
 from pydes import Simulator
 

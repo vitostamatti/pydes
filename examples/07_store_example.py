@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from pydes import Component, Store
-from pydes import Simulator
+from pydes import Component, Store, Simulator
 
 
 @dataclass

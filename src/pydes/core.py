@@ -12,8 +12,7 @@ from pydes.monitor import Monitor, Record
 
 
 class Simulator:
-    """
-    `Simulator` is the central object of Py-DES and is used to model all the process and events of the system.
+    """`Simulator` is the central object of Py-DES and is used to model all the process and events of the system.
 
     Its main objective is to schedule process and events and then execute them in a time-ordered way.
 
@@ -40,10 +39,12 @@ class Simulator:
 
     Methods:
         sleep: Sleep for the given duration.
-        wait_for: Suspends the process until a condition becomes true.
         sleep_until: Sleep until the given simulation time.
+        wait_for: Suspends the process until a condition becomes true.
         schedule: Activates a process either immediately (if both `at` and `after` are None) or after a delay.
         run: Starts simulation.
+        record: records an event by passing a component a value and optionally a description.
+        records: returns a list with all the recors that were saved during the simulation.
 
     """
 
@@ -77,30 +78,27 @@ class Simulator:
 
     def schedule(
         self,
-        what: "Component",
+        comp: "Component",
         at: float | timedelta | None = None,
         after: float | timedelta | None = None,
     ):
-        """Launch a process.
-
-        Activates a process either immediately (if both `at` and `after` are None) or after a delay.
+        """Activates a process either immediately (if both `at` and `after` are None) or after a delay.
 
         Args:
-            what: A class having a main() method.
+            comp: A class having a main() method.
             at: Simulation time to activate the process, default is None.
             after: Delay activation with specified time, default is None.
-
         """
 
         def main():
             self.sleep_until(at)
             self.sleep(after)
-            what.main()
+            comp.main()
             self._next()  # switch to another greenlet, or else execution "fall"
             # is resumed from the parent's last switch()
 
         # Add it to the event-queue and launch it as soon as possible.
-        self._schedule(who=greenlet(main), cond=lambda: True)
+        self._schedule(gl=greenlet(main), cond=lambda: True)
 
     def wait_for(self, cond: Callable[[], bool], until: float | timedelta = None):
         """Wait for a condition to become true.
@@ -116,7 +114,7 @@ class Simulator:
                 raise PydesError(
                     f"{until} cannot be smaller than current time {self.now()}"
                 )
-            self._schedule(cond=lambda: cond() or (self.now() == until), when=until)
+            self._schedule(cond=lambda: cond() or (self.now() == until), time=until)
         else:
             self._schedule(cond=cond)
         self._next()
@@ -146,14 +144,14 @@ class Simulator:
             raise PydesError(
                 f"{until} cannot be smaller than current time {self.now()}"
             )
-        self._schedule(cond=lambda: self.now() == until, when=until)
+        self._schedule(cond=lambda: self.now() == until, time=until)
         self._next()
 
     def _schedule(
         self,
-        who: greenlet | None = None,
+        gl: greenlet | None = None,
         cond: Callable[[], bool] | None = None,
-        when: float | timedelta | None = None,
+        time: float | timedelta | None = None,
     ):
         """Post a condition or a time.
 
@@ -162,12 +160,12 @@ class Simulator:
             cond: Condition to post, default is None.
             when: Time to post the condition, default is None.
         """
-        if who is None:
-            who = greenlet.getcurrent()
+        if gl is None:
+            gl = greenlet.getcurrent()
         if cond:
-            self._conds.append((who, cond))
-        if when:
-            heappush(self._times, (when, next(self._ctimes)))
+            self._conds.append((gl, cond))
+        if time:
+            heappush(self._times, (time, next(self._ctimes)))
 
     def now(self) -> float | datetime:
         """Return current simulation time.

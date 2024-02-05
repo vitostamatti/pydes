@@ -1,8 +1,8 @@
-# --8<-- [start:example]
 from pydes import Component, Simulator
 
 
-class Timer1(Component):
+# --8<-- [start:example-1]
+class Process1(Component):
     def __init__(self, sim: Simulator, time: float = 10):
         self.sim = sim
         self.time = time
@@ -10,44 +10,40 @@ class Timer1(Component):
     def main(self):
         i = 0
         while True:
-            self.sim.record(
-                self,
-                "running loop",
-                0,
-            )
+            self.sim.record(self, "running loop", 0)
             i += 1
             self.sim.sleep(self.time)
 
 
-class Timer2(Component):
+# --8<-- [end:example-1]
+
+
+# --8<-- [start:example-2]
+class Process2(Component):
     def __init__(self, sim: Simulator, time: float = 10):
         self.sim = sim
         self.time = time
 
     def main(self):
         i = 0
-        self.sim.record(
-            self,
-            "running loop",
-            0,
-        )
+        self.sim.record(self, "running loop", 0)
         i += 1
         self.sim.sleep(self.time)
         self.sim.schedule(self)
 
 
-# --8<-- [end:example]
+# --8<-- [end:example-2]
 
 
 # --8<-- [start:run-example]
-print("Timer 1")
+print("Process 1")
 sim = Simulator()
-timer = Timer1(sim, time=10)
-sim.schedule(timer)
+process1 = Process1(sim, time=10)
+sim.schedule(process1)
 sim.run(30)
-print("Timer 2")
+print("Process 2")
 sim.reset()
-timer = Timer2(sim, time=10)
-sim.schedule(timer)
+process2 = Process2(sim, time=10)
+sim.schedule(process2)
 sim.run(30)
 # --8<-- [end:run-example]

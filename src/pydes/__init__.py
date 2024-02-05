@@ -1,4 +1,6 @@
-__version__ = "0.0.1-alpha"
+from importlib.metadata import version
+
+__version__ = version("py-des-lib")
 
 from pydes.core import Simulator, PydesError, Component
 from pydes.monitor import Monitor, Record

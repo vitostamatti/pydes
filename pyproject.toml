@@ -8,10 +8,9 @@ description = "Event discrete, process based simulation for Python."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Vito Stamatti", email = "vitostamatti@gmail.com" }]
-
 dependencies = ["greenlet"]
 requires-python = ">= 3.10"
-dynamic = ["version"]
+version = "0.1.0"
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -31,8 +30,8 @@ classifiers = [
 ]
 
 
-[tool.setuptools.dynamic]
-version = { attr = "pydes.__version__" }
+# [tool.setuptools.dynamic]
+# version = { attr = "pydes.__version__" }
 
 [project.urls]
 Homepage = "https://vitostamatti.github.io/pydes/"

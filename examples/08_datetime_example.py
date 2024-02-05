@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from pydes.process import *
+from pydes import Component, Simulator
 
 
 class State(Component):

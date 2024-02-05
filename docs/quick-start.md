@@ -68,12 +68,3 @@ sim.run()
         - __init__
 
 
-<!-- ## Predefined Components
-
-:::pydes.Queue
-    options:
-        show_object_full_path: false
-        show_root_toc_entry: false
-        show_root_heading: true
-        members:
-        - __init__ -->

@@ -21,7 +21,7 @@ plugins:
   - search:
   - gen-files:
       scripts:
-      - scripts/gen_ref_pages.py  
+      - docs/scripts/gen_ref_pages.py  
   - literate-nav:
       nav_file: SUMMARY.md
   - mkdocstrings:
@@ -29,14 +29,14 @@ plugins:
       handlers:
         python:
           options:
-            # summary: true
-            # show_category_heading: true
             show_docstring_functions: true
             show_symbol_type_toc: true
             show_symbol_type_heading: true
             show_source: false
             merge_init_into_class: true
             members_order: source
+            # summary: true
+            # show_category_heading: true
             # allow_inspection: true  
   - section-index:
 
@@ -56,10 +56,10 @@ nav:
   - index.md
   - Overview: overview.md
   - Quick Start: quick-start.md
-  - Examples: 
-    - ./examples/index.md
-    - ./examples/timer-example.md
+  - Examples: examples/
   - Reference: reference/
+    # - ./examples/index.md
+    # - ./examples/01-process-example.md
     # - py-des-events: 
     # # reference/py-des/events/__init__.md
     #   - core: reference/py-des/events/core.md

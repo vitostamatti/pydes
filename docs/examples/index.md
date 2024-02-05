@@ -8,5 +8,6 @@ but to cover the usage of all the components and capabilities that `Py-DES` has 
 
 ## Contents
 
-* [Timer Example](timer-example.md) 
+* [Process Example](01-process-example.md) 
+* [Event Example](02-event-example.md) 
 * more coming soon...
