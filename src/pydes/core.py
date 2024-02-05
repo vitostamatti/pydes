@@ -153,7 +153,7 @@ class Simulator:
         cond: Callable[[], bool] | None = None,
         time: float | timedelta | None = None,
     ):
-        """Post a condition or a time.
+        """Schedules a condition or a time.
 
         Args:
             who: Greenlet object, default is None.
