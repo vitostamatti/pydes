@@ -1,7 +1,10 @@
-from pydes import Component, Container
-from pydes import Simulator
+# --8<-- [start:imports]
+from pydes import Component, Container, Simulator
+
+# --8<-- [end:imports]
 
 
+# --8<-- [start:example-1]
 class Process1(Component):
     def __init__(self, sim: Simulator, container: Container):
         self.sim = sim
@@ -18,6 +21,10 @@ class Process1(Component):
             self.sim.sleep(1)
 
 
+# --8<-- [end:example-1]
+
+
+# --8<-- [start:example-2]
 class Process2(Component):
     def __init__(self, sim: Simulator, container: Container):
         self.sim = sim
@@ -32,11 +39,15 @@ class Process2(Component):
             self.sim.record(self, f"container level: {self.container.level()}")
 
 
-if __name__ == "__main__":
-    sim = Simulator()
-    container = Container(sim)
-    p1 = Process1(sim, container)
-    p2 = Process2(sim, container)
-    sim.schedule(p1)
-    sim.schedule(p2)
-    sim.run(until=10)
+# --8<-- [end:example-2]
+
+# --8<-- [start:run]
+
+sim = Simulator()
+container = Container(sim)
+p1 = Process1(sim, container)
+p2 = Process2(sim, container)
+sim.schedule(p1)
+sim.schedule(p2)
+sim.run(until=10)
+# --8<-- [end:run]
