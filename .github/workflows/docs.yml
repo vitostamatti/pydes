@@ -5,8 +5,8 @@ on:
   #     - main
   release:
     types: [published]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
 jobs:
   build:
