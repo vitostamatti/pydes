@@ -29,27 +29,27 @@ sleep for a given time and then restart. To model this situation, there'are two 
 *  Defining a while infinite loop in the body of the main method and model all the process inside this loop.
 
 ```py linenums="1" hl_lines="1 11"
---8<-- "./examples/01_process_example.py:example-1"
+--8<-- "./docs/code/01_process_example.py:example-1"
 ```
 
 * Alternatively, one could define the activation of the `Component` inside 
 the `main` method by passing `self` to the `schedule` method.
 
 ```py linenums="1" hl_lines="11"
---8<-- "./examples/01_process_example.py:example-2"
+--8<-- "./docs/code/01_process_example.py:example-2"
 ```
 
 To run the simulation with these two different timers, you have to 
 create the `Simulator` object and `schedule` both Timer components
 
 ```py linenums="1"
---8<-- "./examples/01_process_example.py:run-example"
+--8<-- "./docs/code/01_process_example.py:run-example"
 ```
 
 The outputs of this simulation would look something like this.
 
 ```bash
 --8<--
-./examples/out/01_process_example_out.txt
+./docs/code/out/01_process_example_out.txt
 --8<--
 ```
