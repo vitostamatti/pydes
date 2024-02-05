@@ -9,8 +9,9 @@
 <div align="center">
 
   ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
-  ![docs](https://github.com/vitostamatti/pydes/actions/workflows/docs.yml/badge.svg)
+  ![gh-pages](https://github.com/vitostamatti/pydes/actions/workflows/gh-pages.yml/badge.svg)
   [![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
+  ![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)  
 </div>
 
 
