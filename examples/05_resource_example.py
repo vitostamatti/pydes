@@ -1,6 +1,10 @@
+# --8<-- [start:imports]
 from pydes import Simulator, Component, Resource
 
+# --8<-- [end:imports]
 
+
+# --8<-- [start:example-1]
 class Process1(Component):
     def __init__(self, sim: Simulator, resource: Resource):
         self.sim = sim
@@ -16,6 +20,10 @@ class Process1(Component):
         self.sim.record(self, "resource released")
 
 
+# --8<-- [end:example-1]
+
+
+# --8<-- [start:example-2]
 class Process2(Component):
     def __init__(self, sim: Simulator, resource: Resource):
         self.sim = sim
@@ -33,11 +41,14 @@ class Process2(Component):
         self.sim.record(self, "resource released")
 
 
-if __name__ == "__main__":
-    sim = Simulator()
-    resource = Resource(sim)
-    p1 = Process1(sim, resource)
-    p2 = Process2(sim, resource)
-    sim.schedule(p1)
-    sim.schedule(p2)
-    sim.run()
+# --8<-- [end:example-2]
+
+# --8<-- [start:run]
+sim = Simulator()
+resource = Resource(sim)
+p1 = Process1(sim, resource)
+p2 = Process2(sim, resource)
+sim.schedule(p1)
+sim.schedule(p2)
+sim.run()
+# --8<-- [end:run]

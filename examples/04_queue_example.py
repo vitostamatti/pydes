@@ -1,9 +1,12 @@
+# --8<-- [start:imports]
 from dataclasses import dataclass
 import random
-from pydes import Component, Queue
-from pydes import Simulator
+from pydes import Component, Queue, Simulator
+
+# --8<-- [end:imports]
 
 
+# --8<-- [start:example-1]
 @dataclass
 class Element:
     id: int
@@ -27,6 +30,10 @@ class Process1(Component):
             i += 1
 
 
+# --8<-- [end:example-1]
+
+
+# --8<-- [start:example-2]
 class Process2(Component):
     def __init__(self, sim: Simulator, queue: Queue):
         self.sim = sim
@@ -41,11 +48,14 @@ class Process2(Component):
             self.sim.sleep(random.randint(10, 20))
 
 
-if __name__ == "__main__":
-    sim = Simulator()
-    queue = Queue(sim)
-    p1 = Process1(sim, queue)
-    p2 = Process2(sim, queue)
-    sim.schedule(p1)
-    sim.schedule(p2)
-    sim.run(until=100)
+# --8<-- [end:example-2]
+
+# --8<-- [start:run]
+sim = Simulator()
+queue = Queue(sim)
+p1 = Process1(sim, queue)
+p2 = Process2(sim, queue)
+sim.schedule(p1)
+sim.schedule(p2)
+sim.run(until=100)
+# --8<-- [end:run]
