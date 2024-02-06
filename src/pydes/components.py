@@ -4,10 +4,16 @@ from pydes.core import Component, Simulator, PydesError
 
 
 class Event(Component):
-    """Represents an event in the simulation.
+    """Represents an event in the simulation. An event can be waited and
+    triggered by a `Component`.
 
     Args:
         sim (Simulator): The simulator instance.
+
+    Methods:
+        wait: a component can call the `wait` method and suspend its excecution until this event is set.
+        set: a component can call the `set` method and trigger the event. This causes all the waiting
+            components to continue its excecution.
     """
 
     def __init__(self, sim: Simulator):
@@ -33,6 +39,10 @@ class State(Component):
     Args:
         sim (Simulator): The simulator instance.
         value (Any): The initial value of the state.
+
+    Methods:
+        set:
+        wait:
     """
 
     def __init__(self, sim: Simulator, value: Any):

@@ -11,6 +11,7 @@ condition that needs to be triggered in order to continue the simulation.
         show_bases: false
         show_symbol_type_heading: false
         
+        
 ## Imports
 
 First of all, we import the necessary modules and classes from the `pydes` library. These imports are essential for setting up and running our simulation.
