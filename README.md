@@ -45,9 +45,9 @@ class Process(Component):
 
     def main(self):
         for _ in range(10):
-            self.sim.record(self, "waiting", 1)
+            self.sim.record(self, "start waiting")
             self.sim.sleep(2)
-            self.sim.record(self, "waiting", 0)
+            self.sim.record(self, "end waiting")
 ```
 
 Now schedule the main process object and run simulation
