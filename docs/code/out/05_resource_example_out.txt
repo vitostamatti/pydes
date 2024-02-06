@@ -1,0 +1,13 @@
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+| time                           | component       | value                                    | description                    |
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+|                                |                 |                                          |                                |
+| 0                              | Process1.0      | requesting resource                      | None                           |
+| 0                              | Process1.0      | resource aquired                         | None                           |
+| 0                              | Process2.0      | sleeps before requesting                 | None                           |
+| 5                              | Process2.0      | requesting resource                      | None                           |
+| 10                             | Process1.0      | releasing resource                       | None                           |
+| 10                             | Process1.0      | resource released                        | None                           |
+| 10                             | Process2.0      | resource aquired                         | None                           |
+| 20                             | Process2.0      | releasing resource                       | None                           |
+| 20                             | Process2.0      | resource released                        | None                           |

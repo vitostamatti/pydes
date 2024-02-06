@@ -16,15 +16,10 @@ class Process1(Component):
         self.sim = sim
 
     def main(self):
-        for _ in range(10):
-            self.sim.record(
-                self,
-                "waiting",
-                1,
-            )
-
+        for _ in range(3):
+            self.sim.record(self, "waiting")
             self.sim.sleep(timedelta(minutes=10))
-            self.sim.record(self, "waiting", 0)
+            self.sim.record(self, "waiting")
 
 
 class Process2(Component):
@@ -33,12 +28,12 @@ class Process2(Component):
         self.state = state
 
     def main(self):
-        for _ in range(10):
-            self.sim.record(self, "waiting", 1)
+        for _ in range(3):
+            self.sim.record(self, "waiting")
             self.sim.sleep(timedelta(minutes=2))
-            self.sim.record(self, "waiting", 0)
+            self.sim.record(self, "waiting")
 
-        self.sim.record(state, "change state", True)
+        self.sim.record(state, "change state")
         self.state.value = True
 
 
@@ -48,9 +43,9 @@ class Process3(Component):
         self.state = state
 
     def main(self):
-        self.sim.record(self, "wait state", 1)
+        self.sim.record(self, "wait state")
         self.sim.wait_for(lambda: self.state.value)
-        self.sim.record(self, "wait state", 0)
+        self.sim.record(self, "wait state")
 
 
 # --8<-- [end:example-1]
@@ -68,6 +63,6 @@ sim.schedule(p1)
 sim.schedule(p1_1, at=now + timedelta(minutes=1))
 sim.schedule(p2, at=now + timedelta(minutes=10))
 sim.schedule(p3)
-sim.run()
+sim.run(until=datetime.max)
 
 # --8<-- [end:run]

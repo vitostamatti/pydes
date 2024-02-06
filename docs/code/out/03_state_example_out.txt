@@ -1,0 +1,9 @@
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+| time                           | component       | value                                    | description                    |
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+|                                |                 |                                          |                                |
+| 0                              | Process1.0      | wait for state                           | None                           |
+| 0                              | Process2.0      | sleeps before changing state             | None                           |
+| 10                             | Process2.0      | sets state                               | None                           |
+| 10                             | Process2.0      | state changed                            | None                           |
+| 10                             | Process1.0      | state wait finished                      | None                           |

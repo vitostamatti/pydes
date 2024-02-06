@@ -22,11 +22,11 @@ class Process1(Component):
         i = 0
         while True:
             e = Element(i)
-            self.sim.record(self, f"wait before inserting {e} into queue")
+            self.sim.record(self, f"{e} created")
             self.sim.sleep(random.randint(5, 10))
             self.queue.put(e)
             self.sim.record(self, "inserted element into queue")
-            self.sim.record(self, "{self.queue.size()} elements in queue")
+            self.sim.record(self, f"{self.queue.size()} elements in queue")
             i += 1
 
 
@@ -57,5 +57,5 @@ p1 = Process1(sim, queue)
 p2 = Process2(sim, queue)
 sim.schedule(p1)
 sim.schedule(p2)
-sim.run(until=100)
+sim.run(until=30)
 # --8<-- [end:run]

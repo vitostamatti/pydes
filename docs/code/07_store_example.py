@@ -57,5 +57,5 @@ p1 = Process1(sim, store)
 p2 = Process2(sim, store)
 sim.schedule(p1)
 sim.schedule(p2)
-sim.run(until=100)
+sim.run(until=20)
 # --8<-- [end:run]

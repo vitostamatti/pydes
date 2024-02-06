@@ -1,0 +1,9 @@
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+| time                           | component       | value                                    | description                    |
+| ------------------------------ | --------------- | ---------------------------------------- | ------------------------------ |
+|                                |                 |                                          |                                |
+| 0                              | Process1.0      | wait for event                           | None                           |
+| 0                              | Process2.0      | sleeps before triggering event           | None                           |
+| 10                             | Process2.0      | sets event                               | None                           |
+| 10                             | Process2.0      | event was set                            | None                           |
+| 10                             | Process1.0      | event was triggered                      | None                           |

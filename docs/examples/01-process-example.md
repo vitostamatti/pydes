@@ -1,52 +1,46 @@
-# Timer Example
+# Process Example
 
-This example demostrates the basic usage of the `Component` class and 
-the `sleep` method of the `Simulator`. 
+This example illustrates how to use the `Component` class and the `sleep` method of the `Simulator` in a simulation scenario.
 
-First of all, you need to import the `Simulator` and the `Component` classes 
-from `pydes`
+## Imports
 
+To begin, import the necessary classes from `pydes`.
 
-```py
+```python
 from pydes import Component, Simulator
 ```
 
-To define your processes you need to define a class excending the Component and 
-implement the `main` method of this class. 
+## Define Model
 
-Inside the `main` method, you can use different `Simulator` methods to control 
-the flow of the simulation time and the advance of the procesess. In this case,
-we use the `sleep` method to "wait" for a given time before continuing with the 
-process of the component. While this component is "sleeping", other process can 
-take control of the simulation and advance in its own process if they need to
+Next, define your processes by creating a class that extends the `Component` class and implements its `main` method.
 
-Besides the sleep, we want to record some information about the process. For 
-this we use the `record` method of the `Simulator`.
+Inside the `main` method, you can control the simulation time and process flow using various methods provided by the `Simulator`. Here, we use the `sleep` method to pause execution for a specified duration before continuing with the component's process. While this component is inactive, other processes can progress within the simulation.
 
-In this short example, we're going to model an infinite process that is going to 
-sleep for a given time and then restart. To model this situation, there'are two possible approaches.
+Additionally, you may want to record information about the process using the `record` method of the `Simulator`.
 
-*  Defining a while infinite loop in the body of the main method and model all the process inside this loop.
+In this simple example, we're modeling a process that repeatedly sleeps for a given time and then restarts. There are two approaches to model this:
+
+Use an infinite `while` loop within the `main` method to encapsulate the process logic.
 
 ```py linenums="1" hl_lines="1 11"
 --8<-- "./docs/code/01_process_example.py:example-1"
 ```
 
-* Alternatively, one could define the activation of the `Component` inside 
-the `main` method by passing `self` to the `schedule` method.
+Alternatively, activate the `Component` within the `main` method by passing `self` to the `schedule` method.
 
 ```py linenums="1" hl_lines="11"
 --8<-- "./docs/code/01_process_example.py:example-2"
 ```
 
-To run the simulation with these two different timers, you have to 
-create the `Simulator` object and `schedule` both Timer components
+## Run Simulation
+
+To execute the simulation with these two different processes, create a `Simulator` object and schedule both components.
 
 ```py linenums="1"
 --8<-- "./docs/code/01_process_example.py:run-example"
 ```
 
-The outputs of this simulation would look something like this.
+The simulation output would resemble the following:
 
 ```bash
 --8<--
