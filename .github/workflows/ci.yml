@@ -38,11 +38,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test
       run: |
-        pytest
-    - name: Test Coverage
-      run: python -m pytest --cov-report xml:coverage.xml --cov=./src/pydes tests/
-    - name: Get Cover 
-      uses: orgoro/coverage@v3.1
-      with:
-          coverageFile: coverage.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+        pytest --cov=./src/pydes tests/
