@@ -13,7 +13,7 @@ $ pip install py-des-lib
 ## Hello-World
 
 
-```py
+```py linenums="1"
 from pydes import Component, Simulator
 
 class Process(Component):
@@ -29,7 +29,7 @@ class Process(Component):
 
 Now schedule the main process object and run simulation
 
-```py
+```py linenums="1"
 sim = Simulator()
 p = Process(sim)
 sim.schedule(p)
