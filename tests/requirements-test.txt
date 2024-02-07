@@ -1,4 +1,4 @@
 pytest
 pytest-cov
 coverage-badge
-flake-8
+flake8
