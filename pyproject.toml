@@ -34,8 +34,8 @@ classifiers = [
 # version = { attr = "pydes.__version__" }
 
 [project.urls]
-Homepage = "https://vitostamatti.github.io/pydes/"
-Documentation = "https://vitostamatti.github.io/pydes/"
+Homepage = "https://pydes.readthedocs.io/"
+Documentation = "https://pydes.readthedocs.io/"
 "Source code" = "https://github.com/vitostamatti/pydes"
 
 [tool.setuptools]
