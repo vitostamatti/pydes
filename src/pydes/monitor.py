@@ -45,7 +45,7 @@ class Monitor:
             for _ in range(10):
                 self.sim.record(self,"start waiting")
                 self.sim.sleep(2)
-                self.sim.record(self,"end waiting","this is an aditional description)
+                self.sim.record(self,"end waiting","this is an aditional description")
     ```
 
     When the simulation runs, you'll see all you recorded events printed out. Besides, these records
