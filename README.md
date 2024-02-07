@@ -11,6 +11,7 @@
   ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
   [![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
   ![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)  
+  
 </div>
 
 
