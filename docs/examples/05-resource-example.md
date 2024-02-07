@@ -1,4 +1,4 @@
-# Resoure Example
+# Resource Example
 
 :::pydes.Resource
     options:
