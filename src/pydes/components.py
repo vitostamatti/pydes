@@ -31,18 +31,16 @@ class Event(Component):
 
 
 class State(Component):
-    """Represents a state in the simulation.
-
-    It is highly recommended to use Enums to control the possible
-    values that a State object can take.
+    """Represents a state in the simulation. It is highly recommended to use Enums
+    to control the possible values that a State object can take.
 
     Args:
         sim (Simulator): The simulator instance.
         value (Any): The initial value of the state.
 
     Methods:
-        set:
-        wait:
+        set: changes the state to a new provided value
+        wait: waits until a certain value is set in the State.
     """
 
     def __init__(self, sim: Simulator, value: Any):
@@ -67,7 +65,17 @@ class State(Component):
 
 
 class Queue(Component):
-    """Represents a queue in the simulation."""
+    """Represents a queue in the simulation. Queues are used to acumulate
+    objects in a buffer and retrieved them from it.
+
+    Args:
+        sim: The simulator instance.
+        capacity: The maximun lenght of the queue.
+
+    Methods:
+        put: tries to insert a new member into the queue and waits if the queue is full.
+        get: tries to get one member from the queue and waits if the queue is empty.
+    """
 
     def __init__(self, sim: Simulator, capacity: float | int = inf):
         """Constructor for Queue class.
@@ -91,7 +99,7 @@ class Queue(Component):
         return self._waiters.pop(0)
 
     def put(self, member: Any):
-        """Put an item into the queue.
+        """Put an item into the queue or waits if the queue is full.
 
         Args:
             member (Any): The item to be put into the queue.
@@ -100,7 +108,8 @@ class Queue(Component):
         self._waiters.append(member)
 
     def size(self) -> int:
-        """Get the size of the queue.
+        """Get the size of the queue. Its equivalent to the number of
+        member inside.
 
         Returns:
             int: The number of items in the queue.
@@ -112,8 +121,12 @@ class Resource(Component):
     """Represents a resource in the simulation.
 
     Args:
-        sim (Simulator): The simulator instance.
-        capacity (int, optional): The capacity of the resource, default is 1.
+        sim: The simulator instance.
+        capacity: The capacity of the resource, default is 1.
+
+    Methods:
+        request: tries to get the ownership of this `Resource` and waits if the resource is not avialable.
+        release: gives back the ownership of the `Resource` so that other user can make use of it.
     """
 
     def __init__(self, sim: Simulator, capacity: int = 1) -> None:
@@ -127,7 +140,7 @@ class Resource(Component):
         If the resource is idle, the component can acquire it. Otherwise, it waits until the resource becomes idle.
 
         Args:
-            by (Component): The component requesting the resource.
+            by: The component requesting the resource.
         """
         if self.is_idle():
             self._users.append(by)
@@ -140,7 +153,7 @@ class Resource(Component):
         """Release the resource.
 
         Args:
-            by (Component): The component releasing the resource.
+            by: The component releasing the resource.
 
         Raises:
             PydesError: If the component has not previously requested the resource.
@@ -170,8 +183,12 @@ class Container(Component):
     """Represents a container in the simulation.
 
     Args:
-        sim (Simulator): The simulator instance.
-        capacity (Union[int, float], optional): The capacity of the container, default is 1.
+        sim: The simulator instance.
+        capacity: The capacity of the container, default is 1.
+
+    Methods:
+        get:
+        put:
     """
 
     def __init__(self, sim: Simulator, capacity: int | float = inf) -> None:
@@ -183,7 +200,7 @@ class Container(Component):
         """Get some amount from the container.
 
         Args:
-            amount (Union[int, float], optional): The amount to get from the container, default is 1.
+            amount: The amount to get from the container, default is 1.
         """
         self._sim.wait_for(lambda: self._can_get(amount))
         self._level -= amount
@@ -192,7 +209,7 @@ class Container(Component):
         """Put some amount into the container.
 
         Args:
-            amount (Union[int, float], optional): The amount to put into the container, default is 1.
+            amount: The amount to put into the container, default is 1.
         """
         self._sim.wait_for(lambda: self._can_put(amount))
         self._level += amount
@@ -221,8 +238,8 @@ class Store(Component):
     objects to be of the same type.
 
     Args:
-        sim (Simulator): The simulator instance.
-        capacity (Union[int, float], optional): The capacity of the store, default is infinity.
+        sim: The simulator instance.
+        capacity: The capacity of the store, default is infinity.
     """
 
     def __init__(self, sim: Simulator, capacity: int | float = inf):
@@ -239,7 +256,7 @@ class Store(Component):
         """Put an item into the store.
 
         Args:
-            item (Any): The item to put into the store.
+            item: The item to put into the store.
         """
         self._sim.wait_for(lambda: self._can_put(item))
         self._items.append(item)
