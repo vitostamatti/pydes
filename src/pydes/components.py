@@ -69,7 +69,7 @@ class State(Component):
 class Queue(Component):
     """Represents a queue in the simulation."""
 
-    def __init__(self, sim: Simulator):
+    def __init__(self, sim: Simulator, capacity: float | int = inf):
         """Constructor for Queue class.
 
         Args:
@@ -77,6 +77,7 @@ class Queue(Component):
         """
         self._sim = sim
         self._waiters = []
+        self._capacity = capacity
 
     def get(self) -> Any:
         """Get an item from the queue.
@@ -95,6 +96,7 @@ class Queue(Component):
         Args:
             member (Any): The item to be put into the queue.
         """
+        self._sim.wait_for(cond=lambda: self.size() < self._capacity)
         self._waiters.append(member)
 
     def size(self) -> int:
