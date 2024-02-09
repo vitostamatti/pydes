@@ -44,6 +44,8 @@ Finally, we set up the simulation environment, schedule the processes, and run t
 --8<-- "./docs/code/02_event_example.py:run"
 ```
 
+The simulation output would resemble the following:
+
 ```bash
 --8<--
 ./docs/code/out/02_event_example_out.txt
