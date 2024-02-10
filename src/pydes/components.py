@@ -4,11 +4,11 @@ from pydes.core import Component, Simulator, PydesError
 
 
 class Event(Component):
-    """Represents an event in the simulation. An event can be waited and
-    triggered by a `Component`.
+    """An event can be waited and set by components. They are very useful to model
+    trigger conditions and model interaction between different actors across the system.
 
     Args:
-        sim (Simulator): The simulator instance.
+        sim: The simulator instance.
 
     Methods:
         wait: a component can call the `wait` method and suspend its excecution until this event is set.
@@ -65,8 +65,7 @@ class State(Component):
 
 
 class Queue(Component):
-    """Represents a queue in the simulation. Queues are used to acumulate
-    objects in a buffer and retrieved them from it.
+    """Queues are used to acumulate objects in a buffer and retrieved them from it.
 
     Args:
         sim: The simulator instance.
@@ -118,7 +117,8 @@ class Queue(Component):
 
 
 class Resource(Component):
-    """Represents a resource in the simulation.
+    """Resources can be requested and released by components and therefore are really
+    useful in modeling real world scenarios quere components must be shared among different processess.
 
     Args:
         sim: The simulator instance.
@@ -180,15 +180,17 @@ class Resource(Component):
 
 
 class Container(Component):
-    """Represents a container in the simulation.
+    """Containers have the capability to acumulate and provide continuous
+    amounts of what contains. It is particularly useful to model non discrete
+    accumulators like Tanks.
 
     Args:
         sim: The simulator instance.
         capacity: The capacity of the container, default is 1.
 
     Methods:
-        get:
-        put:
+        get: decrease the level of the container by some amount.
+        put: increase the level of the container by some amount.
     """
 
     def __init__(self, sim: Simulator, capacity: int | float = inf) -> None:
@@ -232,10 +234,8 @@ class Container(Component):
 
 
 class Store(Component):
-    """Represents a store in the simulation.
-
-    Stores can be use to insert any type of object but it requires all the
-    objects to be of the same type.
+    """Stores are useful to save and retrieve objects. Stores can be use to
+    insert any type of object but it requires all the objects to be of the same type.
 
     Args:
         sim: The simulator instance.

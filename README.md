@@ -70,10 +70,9 @@ If you have any questions, suggestions, or feedback regarding **py-des**, feel f
 
 
 ## Todos/Ideas
-- complete docs
-- add "speed" to the simulation
-- add predifined records on components
-- add more components: Server, Source, Sink ...
-- create a module for Network (nodes and links) components
-- generate components with cli tool for faster developement and automatic boilerplate (other new package)
-- dependency injection
+- [ ] more docs
+- [ ] add simulation speed 
+- [ ] add predifined records on components
+- [ ] add components: Server, Source, Sink ...
+- [ ] add a Network module with nodes and links.
+
