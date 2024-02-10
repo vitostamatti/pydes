@@ -1,6 +1,3 @@
-
-
-
 <p align="center">
   <a href="" rel="noopener">
  <img src="https://github.com/vitostamatti/pydes/blob/main/docs/assets/pydes-with-bg.png?raw=true" alt="Project logo"></a>
