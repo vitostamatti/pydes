@@ -1,6 +1,6 @@
 # Event Example
 
-This example is about showing the usage of the `Event` component. This component can be used as a 
+This example is about showing the usage of the `Event` component. This component can be used as a
 condition that needs to be triggered in order to continue the simulation.
 
 :::pydes.Event
@@ -10,8 +10,7 @@ condition that needs to be triggered in order to continue the simulation.
         show_root_heading: true
         show_bases: false
         show_symbol_type_heading: false
-        
-        
+
 ## Imports
 
 First of all, we import the necessary modules and classes from the `pydes` library. These imports are essential for setting up and running our simulation.

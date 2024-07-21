@@ -16,13 +16,13 @@
 
 ## Getting Started
 
-To begin using **py-des**, simply install the package via pip (_comming soon_):
+To begin using **py-des**, simply install the package via pip (_coming soon_):
 
 ```bash
 pip install py-des-lib
 ```
 
-First define your main process extending the `Component` and defining a `main` method. 
+First define your main process extending the `Component` and defining a `main` method.
 
 ```py linenums="1"
 from pydes import Component, Simulator
@@ -49,7 +49,7 @@ sim.run()
 
 If you are interested in learning about what is Discrete Event Simulation you can start your journey in the [overview](overview.md) section.
 
-If you want some hands-on leraning experience, you can check out the [quick-start](quick-start.md) and [examples](./examples/index.md) sections for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
+If you want some hands-on learning experience, you can check out the [quick-start](quick-start.md) and [examples](./examples/index.md) sections for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
 
 
 ## Feedback and Support
