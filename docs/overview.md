@@ -1,6 +1,5 @@
 # Overview
 
-
 ## Introduction
 
 [Discrete Event Simulation](https://en.wikipedia.org/wiki/Discrete-event_simulation) (DES) is a powerful modeling technique that enables the emulation of real-world systems by simulating individual events as they occur over time. In data science, DES serves as a critical tool for modeling dynamic systems and processes, aiding in understanding their behavior, optimizing performance, and making informed decisions.
@@ -13,17 +12,17 @@ Discrete Event Simulation (DES) operates on the premise of modeling dynamic syst
 
 ### Fundamental Concepts of DES
 
-At its core, DES revolves around **entities**, **events**, the simulation **clock**, and **queues**. 
+At its core, DES revolves around **entities**, **events**, the simulation **clock**, and **queues**.
 
-- Entities represent the objects or elements within the system under observation. 
-- Events, triggered by entities, denote occurrences that affect the system's state or condition. 
-- The simulation clock marks discrete instances when these events transpire, driving the progression of time within the simulated environment. 
+- Entities represent the objects or elements within the system under observation.
+- Events, triggered by entities, denote occurrences that affect the system's state or condition.
+- The simulation clock marks discrete instances when these events transpire, driving the progression of time within the simulated environment.
 - Queues play a pivotal role in managing and processing entities, representing waiting lines or buffers where entities await processing or service.
 
-If we go one abstraction layer up, common DES components can be classified into **sources**, **servers** (with or withtout queues) and **sinks**.
+If we go one abstraction layer up, common DES components can be classified into **sources**, **servers** (with or without queues) and **sinks**.
 - Sources are responsible of producing entities and inserting them into the simulating system. Times between arrival and amount of entities per arrival are common parameters of sources.
 - Servers are in charge of delaying entities in the system for a given time period defined usually as a processing time.
-- Sinks are used to remove entities from the simlating system and are useful to collect information about times spend by entities and performance of the overall system.
+- Sinks are used to remove entities from the simulating system and are useful to collect information about times spend by entities and performance of the overall system.
 
 <figure markdown>
   ![Logo](./assets/des-example.png){ width="500" }

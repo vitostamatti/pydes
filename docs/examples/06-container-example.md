@@ -7,7 +7,6 @@
         show_root_heading: true
         show_bases: false
         show_symbol_type_heading: false
-        
 
 ## Imports
 

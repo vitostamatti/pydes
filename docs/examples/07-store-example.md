@@ -1,6 +1,5 @@
 # Store Example
 
-
 :::pydes.Store
     options:
         show_object_full_path: false
@@ -8,7 +7,6 @@
         show_root_heading: true
         show_bases: false
         show_symbol_type_heading: false
-        
 
 ## Imports
 
