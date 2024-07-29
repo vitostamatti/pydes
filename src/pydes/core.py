@@ -10,7 +10,12 @@ from greenlet import greenlet
 from datetime import datetime, timedelta
 from pydes.monitor import Monitor, Record
 
+Time = int | float | datetime
+Duration = int | float | timedelta
 
+
+# ConditionType = Callable[[], bool]
+# ProcessType = greenlet
 class Simulator:
     """`Simulator` is the central object of Py-DES and is used to model all the process and events of the system.
 
@@ -48,25 +53,23 @@ class Simulator:
 
     """
 
-    def __init__(self, initial_time: float | datetime = 0, trace: bool = True):
-        self._conds: list[Tuple[greenlet, Callable[[], bool]]] = []
-        self._times = []
+    def __init__(self, initial_time: Time = 0, trace: bool = True):
+        self._conds: list[tuple[greenlet, Callable[[], bool]]] = []
+        self._times: list[tuple[Time, int]] = []
         self._ctimes = count()
         self._monitor = Monitor(self, trace)
         self._init_time = initial_time
         self._now = initial_time
 
-    def record(
-        self, component: "Component", value: Any, description: str | None = None
-    ):
+    def record(self, name: str, value: Any, description: str | None = None):
         """Record a simulation event.
 
         Args:
-            component: The component associated with the event.
+            name: The name associated with the event.
             value: Value associated with the event.
             description: Description of the event.
         """
-        self._monitor.record(component, value, description)
+        self._monitor.record(name, value, description)
 
     def records(self) -> list[Record]:
         """Get recorded simulation events.
@@ -78,48 +81,61 @@ class Simulator:
 
     def schedule(
         self,
-        comp: "Component",
-        at: float | timedelta | None = None,
-        after: float | timedelta | None = None,
+        func: Callable[[], None],
+        at: Time | None = None,
+        after: Duration | None = None,
     ):
-        """Activates a process either immediately (if both `at` and `after` are None) or after a delay.
+        """Schedules a function either immediately (if both `at` and `after` are None) or after a delay.
 
         Args:
-            comp: A class having a main() method.
+            func: A function to be scheduled and runned during the simulation.
             at: Simulation time to activate the process, default is None.
             after: Delay activation with specified time, default is None.
+
+        ```python
+        sim = Simulator(until=10)
+
+        class Process:
+            def __init__(self, sim:Simulation):
+                self.sim = sim
+            def main(self):
+                while True:
+                    print("this is my process running")
+                    self.sim.sleep(10)
+
+        process = Process(sim)
+        sim.schedule(proc.main)
+        ```
+
         """
 
         def main():
             self.sleep_until(at)
             self.sleep(after)
-            comp.main()
+            func()
             self._next()  # switch to another greenlet, or else execution "fall"
             # is resumed from the parent's last switch()
 
         # Add it to the event-queue and launch it as soon as possible.
         self._schedule(gl=greenlet(main), cond=lambda: True)
 
-    def wait_for(self, cond: Callable[[], bool], until: float | timedelta = None):
+    def wait_for(self, cond: Callable[[], bool], timeout: Duration | None = None):
         """Wait for a condition to become true.
 
         Suspends this process until the condition becomes true.
 
         Args:
             cond: Function to test.
-            until: Maximum simulation time to wait for condition to become true, default is None.
+            timeout: Maximum simulation time to wait for condition to become true, default is None.
         """
-        if until is not None:
-            if until < self.now():
-                raise PydesError(
-                    f"{until} cannot be smaller than current time {self.now()}"
-                )
-            self._schedule(cond=lambda: cond() or (self.now() == until), time=until)
+        if timeout is not None:
+            time = self._add_to_time(self.now(), timeout)
+            self._schedule(cond=lambda: cond() or (self.now() == time), time=time)
         else:
             self._schedule(cond=cond)
         self._next()
 
-    def sleep(self, duration: float | timedelta | None = None):
+    def sleep(self, duration: Duration | None = None):
         """Sleep for the given duration.
 
         Args:
@@ -127,9 +143,20 @@ class Simulator:
         """
         if duration is None:
             return
-        self.sleep_until(self.now() + duration)
+        time = self._add_to_time(self.now(), duration)
+        self.sleep_until(time)
 
-    def sleep_until(self, until: float | timedelta | None = None):
+    def _add_to_time(self, t: Time, d: Duration):
+        if isinstance(t, (float, int)) and isinstance(d, (float, int)):
+            return t + d
+        elif isinstance(t, datetime) and isinstance(d, timedelta):
+            return t + d
+        else:
+            raise TypeError(
+                f"time of type {type(t)} and duration of type {type(d)} are not compatible"
+            )
+
+    def sleep_until(self, until: Time | None = None):
         """Sleep until the given simulation time.
 
         Args:
@@ -137,13 +164,18 @@ class Simulator:
         """
         if until is None:
             return
+
         if until == self.now():
             return
 
-        if until < self.now():
-            raise PydesError(
-                f"{until} cannot be smaller than current time {self.now()}"
-            )
+        now = self.now()
+        if isinstance(until, float) and isinstance(now, float):
+            if until < now:
+                raise ValueError("Until time cannot be less than current time")
+        elif isinstance(until, datetime) and isinstance(now, datetime):
+            if until < now:
+                raise ValueError("Until time cannot be less than current time")
+
         self._schedule(cond=lambda: self.now() == until, time=until)
         self._next()
 
@@ -151,14 +183,14 @@ class Simulator:
         self,
         gl: greenlet | None = None,
         cond: Callable[[], bool] | None = None,
-        time: float | timedelta | None = None,
+        time: Time | None = None,
     ):
         """Schedules a condition or a time.
 
         Args:
-            who: Greenlet object, default is None.
+            gl: Greenlet object, default is None.
             cond: Condition to post, default is None.
-            when: Time to post the condition, default is None.
+            time: Time to schedule the condition, default is None.
         """
         if gl is None:
             gl = greenlet.getcurrent()
@@ -187,7 +219,7 @@ class Simulator:
                 return process
         return None
 
-    def run(self, until: float | timedelta = inf):
+    def run(self, until: Time = inf):
         """Start simulation.
 
         Args:
@@ -200,7 +232,17 @@ class Simulator:
             # Advance time & retry
             while process is None:
                 # if we reached the max running time we return and end simulation
-                if self._now >= until:
+                if (
+                    isinstance(self._now, (float, int))
+                    and isinstance(until, (float, int))
+                    and self._now >= until
+                ):
+                    return
+                elif (
+                    isinstance(self._now, datetime)
+                    and isinstance(until, datetime)
+                    and self._now >= until
+                ):
                     return
                 # Do we still have process waiting for a new time?
                 if self._times:
@@ -221,74 +263,4 @@ class Simulator:
 
     def _next(self):
         """Switch to the next awakeable process."""
-        greenlet.getcurrent().parent.switch()
-
-
-class _MetaComponent(type):
-    """Metaclass used to track the number of instances of every component subclass."""
-
-    __component_instance_count = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls.__component_instance_count:
-            cls.__component_instance_count[cls] = 0
-        else:
-            cls.__component_instance_count[cls] += 1
-
-        instance = super().__call__(*args, **kwargs)
-
-        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
-
-        return instance
-
-
-class Component(metaclass=_MetaComponent):
-    """
-    Base class for components in the simulation.
-
-    All subclasses of `Component` can define a `main` method which is the
-    underlying process that this `Component` is going to be excecuting.
-
-    Once the `main` method is defined, this component can be scheduled into the
-    simulation using the `schedule` method of `Simulator`
-
-    ```python
-    from pydes.process import Component, Simulator
-
-    # define the component with a main method
-    class Process(Component):
-        def __init__(self, sim: Simulator):
-            self.sim = sim
-
-        def main(self):
-            for _ in range(10):
-                print(self.sim.now(),"waiting")
-                self.sim.sleep(2)
-                print(self.sim.now(),"waiting")
-
-    # create the simulator object
-    sim = Simulator()
-
-    # create an instance of the Component
-    process = Process(sim)
-
-    # schedule the process in the simulator
-    sim.schedule(process)
-
-    # now you can run the simulation
-    sim.run()
-    ```
-    """
-
-    def main(self):
-        """Main method to be implemented by subclasses."""
-        pass
-
-    def __str__(self):
-        return self.__name__
-
-
-class PydesError(Exception):
-    """Custom pydes exception for simulation errors"""
-
-    pass
+        greenlet.getcurrent().parent.switch()  # type: ignore

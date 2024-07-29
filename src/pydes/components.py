@@ -1,6 +1,72 @@
 from math import inf
 from typing import Any
-from pydes.core import Component, Simulator, PydesError
+from pydes.core import Simulator
+
+
+class _MetaComponent(type):
+    """Metaclass used to track the number of instances of every component subclass."""
+
+    __component_instance_count = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls.__component_instance_count:
+            cls.__component_instance_count[cls] = 0
+        else:
+            cls.__component_instance_count[cls] += 1
+
+        instance = super().__call__(*args, **kwargs)
+
+        instance.__name__ = f"{cls.__name__}.{cls.__component_instance_count[cls]}"
+
+        return instance
+
+
+class Component(metaclass=_MetaComponent):
+    """
+    Base class for components in the simulation.
+
+    Components are just an utility base class that tracks how many
+    instances of itself are created. Its `id` property will be unique
+    during the simulation.
+
+    This property is usefull to identify different components in the simulation
+    without having to set an explicit name for them, however is not a requirement
+    for the `Simulation` to run.
+
+    ```python
+    from pydes.process import Component, Simulator
+
+    # define the component with a main method
+    class Process(Component):
+        def __init__(self, sim: Simulator):
+            self.sim = sim
+
+        def main(self):
+            for _ in range(10):
+                print(self.sim.now(),"waiting")
+                self.sim.sleep(2)
+                print(self.sim.now(),"waiting")
+
+    # create the simulator object
+    sim = Simulator()
+
+    # create an instance of the Component
+    process = Process(sim)
+
+    # schedule the process in the simulator
+    sim.schedule(process.main)
+
+    # now you can run the simulation
+    sim.run()
+    ```
+    """
+
+    def __str__(self):
+        return self.__name__
+
+    @property
+    def id(self):
+        return self.__name__
 
 
 class Event(Component):
@@ -162,7 +228,7 @@ class Resource(Component):
             self._users.remove(by)
             # self._sim.wait_for(lambda: True)
         else:
-            raise PydesError(
+            raise ValueError(
                 f"{by} cannot release {self} because it has not been requested"
             )
 
@@ -220,15 +286,15 @@ class Container(Component):
         """Get the current level of the container."""
         return self._level
 
-    def capacity(self) -> int:
+    def capacity(self) -> int | float:
         """Get the capacity of the container."""
         return self._capacity
 
-    def _can_get(self, amount: int) -> bool:
+    def _can_get(self, amount: int | float) -> bool:
         """Check if it's possible to get a certain amount from the container."""
         return self.level() - amount >= 0
 
-    def _can_put(self, amount: int) -> bool:
+    def _can_put(self, amount: int | float) -> bool:
         """Check if it's possible to put a certain amount into the container."""
         return self.level() + amount <= self.capacity()
 
@@ -242,7 +308,7 @@ class Store(Component):
         capacity: The capacity of the store, default is infinity.
     """
 
-    def __init__(self, sim: Simulator, capacity: int | float = inf):
+    def __init__(self, sim: Simulator, capacity: int = 1):
         self._sim = sim
         self._capacity = capacity
         self._items = []
@@ -265,7 +331,7 @@ class Store(Component):
         """Get the current level of the store."""
         return len(self._items)
 
-    def capacity(self) -> int:
+    def capacity(self) -> int | float:
         """Get the capacity of the store."""
         return self._capacity
 
@@ -282,6 +348,6 @@ class Store(Component):
         if type(self._items[0]) == type(item):
             return True
         else:
-            raise PydesError(
+            raise ValueError(
                 f"Item of type {type(item)} cannot be put into store of types {type(self._items[0])}"
             )

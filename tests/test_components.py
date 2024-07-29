@@ -1,5 +1,6 @@
 from pytest import fixture
 from pydes import Simulator, State, Event, Store, Container, Queue, Resource
+from pydes.components import Component
 
 
 @fixture
@@ -28,8 +29,8 @@ def test_state(sim: Simulator):
     c = State(sim, 0)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert c._value == 1
@@ -57,8 +58,8 @@ def test_store(sim: Simulator):
     c = Store(sim)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert len(c._items) == 0
@@ -87,8 +88,8 @@ def test_event(sim: Simulator):
     c = Event(sim)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert c._value is True
@@ -115,8 +116,8 @@ def test_container(sim: Simulator):
     c = Container(sim)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert c.level() == 5
@@ -144,8 +145,8 @@ def test_queue(sim: Simulator):
     c = Queue(sim)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert len(c._waiters) == 0
@@ -154,7 +155,7 @@ def test_queue(sim: Simulator):
 
 
 def test_resource(sim: Simulator):
-    class A:
+    class A(Component):
         def __init__(self, sim: Simulator, resource: Resource):
             self.sim = sim
             self.resource = resource
@@ -164,7 +165,7 @@ def test_resource(sim: Simulator):
             self.sim.sleep(10)
             self.resource.release(self)
 
-    class B:
+    class B(Component):
         def __init__(self, sim: Simulator, resource: Resource):
             self.sim = sim
             self.resource = resource
@@ -172,14 +173,12 @@ def test_resource(sim: Simulator):
         def main(self):
             self.sim.sleep(5)
             self.resource.request(self)
-            # self.sim.sleep(10)
-            # self.resource.release(self)
 
     c = Resource(sim)
     a = A(sim, c)
     b = B(sim, c)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert c.usage() == 1

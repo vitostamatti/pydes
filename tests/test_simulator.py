@@ -3,7 +3,7 @@ from datetime import datetime
 from pytest import fixture
 from greenlet import greenlet
 
-from pydes.core import Component
+from pydes.components import Component
 
 
 @fixture
@@ -76,14 +76,14 @@ def test__schedule_with_gl_cond_and_time(sim: Simulator):
 
 
 def test_schedule_after(sim: Simulator):
-    c = Component()
+    c = lambda: None
     sim.schedule(c, 0, 10)
     sim.run()
     assert sim.now() == 10
 
 
 def test_schedule_at(sim: Simulator):
-    c = Component()
+    c = lambda: None
     sim.schedule(c, 10, 0)
     sim.run()
     assert sim.now() == 10
@@ -98,7 +98,7 @@ def test_sleep(sim: Simulator):
         def main(self):
             self.sim.sleep(10)
 
-    sim.schedule(C(sim))
+    sim.schedule(C(sim).main)
     sim.run()
     assert sim.now() == 10
 
@@ -112,7 +112,7 @@ def test_sleep_until(sim: Simulator):
         def main(self):
             self.sim.sleep_until(10)
 
-    sim.schedule(A(sim))
+    sim.schedule(A(sim).main)
     sim.run()
     assert sim.now() == 10
 
@@ -142,8 +142,8 @@ def test_wait_for(sim: Simulator):
     flag = Flag()
     a = A(sim, flag)
     b = B(sim, flag)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert a.flag.value is True
@@ -159,7 +159,7 @@ def test_wait_for_until(sim: Simulator):
             self.time = sim.now()
 
         def main(self):
-            self.sim.wait_for(cond=lambda: self.flag.value, until=5)
+            self.sim.wait_for(cond=lambda: self.flag.value, timeout=5)
             self.time = sim.now()
 
     class B(Component):
@@ -178,8 +178,8 @@ def test_wait_for_until(sim: Simulator):
     flag = Flag()
     a = A(sim, flag)
     b = B(sim, flag)
-    sim.schedule(a)
-    sim.schedule(b)
+    sim.schedule(a.main)
+    sim.schedule(b.main)
     sim.run()
     assert sim.now() == 10
     assert a.flag.value is True

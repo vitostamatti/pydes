@@ -1,6 +1,6 @@
 # Discrete Event Simulation in Python with Py-DES
 
-In this sectrion we’ll explore the Py-DES basic ojjects and its main capabilities. 
+In this sectrion we’ll explore the Py-DES basic ojjects and its main capabilities.
 
 ## Setup
 
@@ -11,7 +11,6 @@ $ pip install py-des-lib
 ```
 
 ## Hello-World
-
 
 ```py linenums="1"
 from pydes import Component, Simulator
@@ -32,39 +31,33 @@ Now schedule the main process object and run simulation
 ```py linenums="1"
 sim = Simulator()
 p = Process(sim)
-sim.schedule(p)
+sim.schedule(p.main)
 sim.run()
 ```
 
 ## Simulator Object
 
 :::pydes.Simulator
-    options:
-        show_object_full_path: false
-        show_root_toc_entry: false
-        show_root_heading: false
-        members:
-        - __init__
-
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
 
 ## Component Object
 
 :::pydes.Component
-    options:
-        show_object_full_path: false
-        show_root_toc_entry: false
-        show_root_heading: false
-        members:
-        - __init__
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
 
 ## Recording Events
 
 :::pydes.Monitor
-    options:
-        show_object_full_path: false
-        show_root_toc_entry: false
-        show_root_heading: false
-        members:
-        - __init__
-
-
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
