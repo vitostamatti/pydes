@@ -50,13 +50,13 @@ class Simulator:
 
     """
 
-    def __init__(self, initial_time: int | float | datetime = 0, trace: bool = True):
+    def __init__(self, init: int | float | datetime = 0, trace: bool = True):
         self._conds: list[tuple[greenlet, Callable[[], bool]]] = []
         self._times: list[tuple[int | float | datetime, int]] = []
         self._ctimes = count()
         self._monitor = Monitor(self, trace)
-        self._init_time = initial_time
-        self._now = initial_time
+        self._init_time = init
+        self._now = init
 
     def record(self, name: str, value: Any, description: str | None = None):
         """Record a simulation event.
