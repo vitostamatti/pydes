@@ -5,12 +5,11 @@
 
 <div align="center">
 
-  ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
-  [![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
-  ![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)
+![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
+[![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
+![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)
 
 </div>
-
 
 # Welcome to Py-DES
 
@@ -41,9 +40,9 @@ class Process(Component):
 
     def main(self):
         for _ in range(10):
-            self.sim.record(self, "start waiting")
+            self.sim.record(self.id, "start waiting")
             self.sim.sleep(2)
-            self.sim.record(self, "end waiting")
+            self.sim.record(self.id, "end waiting")
 ```
 
 Now schedule the main process object and run simulation
@@ -55,7 +54,7 @@ sim.schedule(p)
 sim.run()
 ```
 
-Start your journey looking at the documentation in the  [quick-start](https://pydes.readthedocs.io/en/latest/quick-start/) section or check out the [examples](https://pydes.readthedocs.io/en/latest/examples/) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
+Start your journey looking at the documentation in the [quick-start](https://pydes.readthedocs.io/en/latest/quick-start/) section or check out the [examples](https://pydes.readthedocs.io/en/latest/examples/) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
 
 ## Feedback and Support
 
