@@ -32,12 +32,18 @@ Now schedule the main process object and run simulation
 sim = Simulator()
 p = Process(sim)
 sim.schedule(p.main)
+sim.schedule(p.main)
 sim.run()
 ```
 
 ## Simulator Object
 
 :::pydes.Simulator
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
 options:
 show_object_full_path: false
 show_root_toc_entry: false
@@ -52,10 +58,20 @@ show_object_full_path: false
 show_root_toc_entry: false
 show_root_heading: false
 members: - **init**
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
 
 ## Recording Events
 
 :::pydes.Monitor
+options:
+show_object_full_path: false
+show_root_toc_entry: false
+show_root_heading: false
+members: - **init**
 options:
 show_object_full_path: false
 show_root_toc_entry: false

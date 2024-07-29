@@ -21,6 +21,7 @@ pip install py-des-lib
 ```
 
 First define your main process extending the `Component` and defining a `main` method.
+First define your main process extending the `Component` and defining a `main` method.
 
 ```py linenums="1"
 from pydes import Component, Simulator
@@ -41,6 +42,7 @@ Now schedule the main process object and run simulation
 ```py linenums="1"
 sim = Simulator()
 p = Process(sim)
+sim.schedule(p.main)
 sim.schedule(p.main)
 sim.run()
 ```
