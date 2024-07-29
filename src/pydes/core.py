@@ -10,9 +10,6 @@ from greenlet import greenlet
 from datetime import datetime, timedelta
 from pydes.monitor import Monitor, Record
 
-Time = int | float | datetime
-Duration = int | float | timedelta
-
 
 # ConditionType = Callable[[], bool]
 # ProcessType = greenlet
@@ -53,9 +50,9 @@ class Simulator:
 
     """
 
-    def __init__(self, initial_time: Time = 0, trace: bool = True):
+    def __init__(self, initial_time: int | float | datetime = 0, trace: bool = True):
         self._conds: list[tuple[greenlet, Callable[[], bool]]] = []
-        self._times: list[tuple[Time, int]] = []
+        self._times: list[tuple[int | float | datetime, int]] = []
         self._ctimes = count()
         self._monitor = Monitor(self, trace)
         self._init_time = initial_time
@@ -82,8 +79,8 @@ class Simulator:
     def schedule(
         self,
         func: Callable[[], None],
-        at: Time | None = None,
-        after: Duration | None = None,
+        at: int | float | datetime | None = None,
+        after: int | float | timedelta | None = None,
     ):
         """Schedules a function either immediately (if both `at` and `after` are None) or after a delay.
 
@@ -119,7 +116,9 @@ class Simulator:
         # Add it to the event-queue and launch it as soon as possible.
         self._schedule(gl=greenlet(main), cond=lambda: True)
 
-    def wait_for(self, cond: Callable[[], bool], timeout: Duration | None = None):
+    def wait_for(
+        self, cond: Callable[[], bool], timeout: int | float | timedelta | None = None
+    ):
         """Wait for a condition to become true.
 
         Suspends this process until the condition becomes true.
@@ -135,7 +134,7 @@ class Simulator:
             self._schedule(cond=cond)
         self._next()
 
-    def sleep(self, duration: Duration | None = None):
+    def sleep(self, duration: int | float | timedelta | None = None):
         """Sleep for the given duration.
 
         Args:
@@ -146,7 +145,7 @@ class Simulator:
         time = self._add_to_time(self.now(), duration)
         self.sleep_until(time)
 
-    def _add_to_time(self, t: Time, d: Duration):
+    def _add_to_time(self, t: int | float | datetime, d: int | float | timedelta):
         if isinstance(t, (float, int)) and isinstance(d, (float, int)):
             return t + d
         elif isinstance(t, datetime) and isinstance(d, timedelta):
@@ -156,7 +155,7 @@ class Simulator:
                 f"time of type {type(t)} and duration of type {type(d)} are not compatible"
             )
 
-    def sleep_until(self, until: Time | None = None):
+    def sleep_until(self, until: int | float | datetime | None = None):
         """Sleep until the given simulation time.
 
         Args:
@@ -183,7 +182,7 @@ class Simulator:
         self,
         gl: greenlet | None = None,
         cond: Callable[[], bool] | None = None,
-        time: Time | None = None,
+        time: int | float | datetime | None = None,
     ):
         """Schedules a condition or a time.
 
@@ -219,7 +218,7 @@ class Simulator:
                 return process
         return None
 
-    def run(self, until: Time = inf):
+    def run(self, until: int | float | datetime = inf):
         """Start simulation.
 
         Args:
