@@ -5,12 +5,11 @@
 
 <div align="center">
 
-  ![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
-  [![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
-  ![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)  
-  
-</div>
+![ci](https://github.com/vitostamatti/pydes/actions/workflows/ci.yml/badge.svg)
+[![pypi](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml/badge.svg)](https://github.com/vitostamatti/pydes/actions/workflows/pypi.yml)
+![read-the-docs](https://readthedocs.org/projects/pydes/badge/?version=latest)
 
+</div>
 
 # Welcome to Py-DES
 
@@ -22,7 +21,6 @@
 
 - **Flexibility:** With **py-des**, users have the flexibility to customize simulation through the usage of predefined and custom `Components`. From simple simulations to complex scenarios involving multiple entities and interactions, **py-des** adapts to diverse use cases with ease.
 
-
 ## Getting Started
 
 To begin using **py-des**, simply install the package via pip (_comming soon_):
@@ -31,7 +29,7 @@ To begin using **py-des**, simply install the package via pip (_comming soon_):
 pip install py-des-lib
 ```
 
-First define your main process extending the `Component` and defining a `main` method. 
+First define your main process extending the `Component` and defining a `main` method.
 
 ```py
 from pydes import Component, Simulator
@@ -42,9 +40,9 @@ class Process(Component):
 
     def main(self):
         for _ in range(10):
-            self.sim.record(self, "start waiting")
+            self.sim.record(self.id, "start waiting")
             self.sim.sleep(2)
-            self.sim.record(self, "end waiting")
+            self.sim.record(self.id, "end waiting")
 ```
 
 Now schedule the main process object and run simulation
@@ -56,20 +54,16 @@ sim.schedule(p)
 sim.run()
 ```
 
-Start your journey looking at the documentation in the  [quick-start](https://pydes.readthedocs.io/en/latest/quick-start/) section or check out the [examples](https://pydes.readthedocs.io/en/latest/examples/) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
-
-
+Start your journey looking at the documentation in the [quick-start](https://pydes.readthedocs.io/en/latest/quick-start/) section or check out the [examples](https://pydes.readthedocs.io/en/latest/examples/) for guidance on how to create simulation environments, schedule events, and analyze simulation outcomes.
 
 ## Feedback and Support
 
 If you have any questions, suggestions, or feedback regarding **py-des**, feel free to reach out via GitHub issues or the official communication channels. Your input is invaluable in shaping the future development of the library and ensuring that it meets the needs of its users.
 
-
-
 ## Todos/Ideas
+
 - [ ] more docs
-- [ ] add simulation speed 
+- [ ] add simulation speed
 - [ ] add predifined records on components
 - [ ] add components: Server, Source, Sink ...
 - [ ] add a Network module with nodes and links.
-
