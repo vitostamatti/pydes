@@ -2,10 +2,11 @@ from importlib.metadata import version
 
 __version__ = version("py-des-lib")
 
-from pydes.core import Simulator, PydesError, Component
+from pydes.core import Simulator
 from pydes.monitor import Monitor, Record
 
 from pydes.components import (
+    Component,
     Container,
     Queue,
     Resource,
@@ -16,7 +17,6 @@ from pydes.components import (
 
 __all__ = [
     "Simulator",
-    "PydesError",
     "Monitor",
     "Record",
     "Component",

@@ -4,7 +4,7 @@ from typing import Any
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pydes.core import Component, Simulator
+    from pydes.core import Simulator
 
 
 @dataclass
@@ -13,13 +13,13 @@ class Record:
 
     Args:
         time (float | datetime): simulation time.
-        component (Component): The component instance.
+        name (str): The name of the record.
         value (Any): the event value to record
         description (str|None): optional description of the recorded event
     """
 
-    time: float | datetime
-    component: "Component"
+    time: float | int | datetime
+    name: str
     value: Any
     description: str | None
 
@@ -69,20 +69,20 @@ class Monitor:
 
     def record(
         self,
-        component: "Component",
+        name: str,
         value: Any,
         description: str | None,
     ):
         """Record a simulation event.
 
         Args:
-            component: The component associated with the event.
+            name: The name associated with the event.
             value: Value associated with the event.
             description: Description of the event.
         """
         rec = Record(
             time=self._sim.now(),
-            component=component,
+            name=name,
             value=value,
             description=description,
         )
@@ -115,7 +115,7 @@ class Monitor:
             )
         else:
             desc = None
-        row = [str(e) for e in [rec.time, rec.component, rec.value, desc]]
+        row = [str(e) for e in [rec.time, rec.name, rec.value, desc]]
 
         self._display_row(row)
 

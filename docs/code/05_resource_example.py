@@ -11,13 +11,13 @@ class Process1(Component):
         self.resource = resource
 
     def main(self):
-        self.sim.record(self, "requesting resource")
+        self.sim.record(self.id, "requesting resource")
         self.resource.request(self)
-        self.sim.record(self, "resource aquired")
+        self.sim.record(self.id, "resource aquired")
         self.sim.sleep(10)
-        self.sim.record(self, "releasing resource")
+        self.sim.record(self.id, "releasing resource")
         self.resource.release(self)
-        self.sim.record(self, "resource released")
+        self.sim.record(self.id, "resource released")
 
 
 # --8<-- [end:example-1]
@@ -30,15 +30,15 @@ class Process2(Component):
         self.resource = resource
 
     def main(self):
-        self.sim.record(self, "sleeps before requesting")
+        self.sim.record(self.id, "sleeps before requesting")
         self.sim.sleep(5)
-        self.sim.record(self, "requesting resource")
+        self.sim.record(self.id, "requesting resource")
         self.resource.request(self)
-        self.sim.record(self, "resource aquired")
+        self.sim.record(self.id, "resource aquired")
         self.sim.sleep(10)
-        self.sim.record(self, "releasing resource")
+        self.sim.record(self.id, "releasing resource")
         self.resource.release(self)
-        self.sim.record(self, "resource released")
+        self.sim.record(self.id, "resource released")
 
 
 # --8<-- [end:example-2]
@@ -48,7 +48,7 @@ sim = Simulator()
 resource = Resource(sim)
 p1 = Process1(sim, resource)
 p2 = Process2(sim, resource)
-sim.schedule(p1)
-sim.schedule(p2)
+sim.schedule(p1.main)
+sim.schedule(p2.main)
 sim.run()
 # --8<-- [end:run]

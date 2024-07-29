@@ -35,9 +35,12 @@ plugins:
             show_source: false
             merge_init_into_class: true
             members_order: source
-            # summary: true
-            # show_category_heading: true
-            # allow_inspection: true  
+            unwrap_annotated: true
+            signature_crossrefs: true
+            show_signature_annotations: false
+            modernize_annotations: true
+            annotations_path: source
+
   - section-index:
 
 markdown_extensions:
@@ -58,13 +61,3 @@ nav:
   - Quick Start: quick-start.md
   - Examples: examples/
   - Reference: reference/
-    # - ./examples/index.md
-    # - ./examples/01-process-example.md
-    # - py-des-events: 
-    # # reference/py-des/events/__init__.md
-    #   - core: reference/py-des/events/core.md
-    # - py-des-process: 
-    #   - core: reference/py-des/process/core.md
-    #   - components: reference/py-des/process/components.md
-
-  # - Reference: reference.md

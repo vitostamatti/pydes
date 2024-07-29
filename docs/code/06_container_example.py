@@ -14,10 +14,10 @@ class Process1(Component):
         # generating elements:
         while True:
             amount = 5
-            self.sim.record(self, f"begin put {amount} into container")
+            self.sim.record(self.id, f"begin put {amount} into container")
             self.container.put(amount)
-            self.sim.record(self, f"end put {amount} into container")
-            self.sim.record(self, f"container level: {self.container.level()}")
+            self.sim.record(self.id, f"end put {amount} into container")
+            self.sim.record(self.id, f"container level: {self.container.level()}")
             self.sim.sleep(1)
 
 
@@ -33,10 +33,10 @@ class Process2(Component):
     def main(self):
         while True:
             amount = 15
-            self.sim.record(self, f"begin get {amount} from container")
+            self.sim.record(self.id, f"begin get {amount} from container")
             self.container.get(amount)
-            self.sim.record(self, f"end get {amount} from container")
-            self.sim.record(self, f"container level: {self.container.level()}")
+            self.sim.record(self.id, f"end get {amount} from container")
+            self.sim.record(self.id, f"container level: {self.container.level()}")
 
 
 # --8<-- [end:example-2]
@@ -47,7 +47,7 @@ sim = Simulator()
 container = Container(sim)
 p1 = Process1(sim, container)
 p2 = Process2(sim, container)
-sim.schedule(p1)
-sim.schedule(p2)
+sim.schedule(p1.main)
+sim.schedule(p2.main)
 sim.run(until=10)
 # --8<-- [end:run]
