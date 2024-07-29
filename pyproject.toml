@@ -21,7 +21,6 @@ greenlet = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
-mypy = "*"
 
 [build-system]
 requires = ["poetry-core"]
