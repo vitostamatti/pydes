@@ -5,6 +5,7 @@ description = "Event discrete, process based simulation for Python."
 authors = ["vitostamatti <vitostamatti@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "src/pydes" }]
 
 [tool.urls]
 Homepage = "https://pydes.readthedocs.io/"
