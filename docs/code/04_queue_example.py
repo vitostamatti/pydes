@@ -22,11 +22,11 @@ class Process1(Component):
         i = 0
         while True:
             e = Element(i)
-            self.sim.record(self, f"{e} created")
+            self.sim.record(self.id, f"{e} created")
             self.sim.sleep(random.randint(5, 10))
             self.queue.put(e)
-            self.sim.record(self, "inserted element into queue")
-            self.sim.record(self, f"{self.queue.size()} elements in queue")
+            self.sim.record(self.id, "inserted element into queue")
+            self.sim.record(self.id, f"{self.queue.size()} elements in queue")
             i += 1
 
 
@@ -41,10 +41,10 @@ class Process2(Component):
 
     def main(self):
         while True:
-            self.sim.record(self, "requesting an element from queue")
+            self.sim.record(self.id, "requesting an element from queue")
             e = self.queue.get()
-            self.sim.record(self, f"got {e} from queue")
-            self.sim.record(self, "waiting before getting next element")
+            self.sim.record(self.id, f"got {e} from queue")
+            self.sim.record(self.id, "waiting before getting next element")
             self.sim.sleep(random.randint(10, 20))
 
 
@@ -55,7 +55,7 @@ sim = Simulator()
 queue = Queue(sim)
 p1 = Process1(sim, queue)
 p2 = Process2(sim, queue)
-sim.schedule(p1)
-sim.schedule(p2)
+sim.schedule(p1.main)
+sim.schedule(p2.main)
 sim.run(until=30)
 # --8<-- [end:run]

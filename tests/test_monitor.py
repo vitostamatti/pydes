@@ -10,15 +10,15 @@ def sim():
 def test_monitor(sim: Simulator):
     m = Monitor(sim, trace=False)
     c = Component()
-    m.record(c, 1, "desc")
-    assert m.values() == [Record(0, c, 1, "desc")]
+    m.record(c.id, 1, "desc")
+    assert m.values() == [Record(0, c.id, 1, "desc")]
 
 
 def test_monitor_trace(capsys):
     sim = Simulator()
     m = Monitor(sim, trace=True)
     c = Component()
-    m.record(c, 1, "desc")
+    m.record(c.id, 1, "desc")
     stdout = capsys.readouterr()
     rows = stdout.out.split("\n")
     colsize = [30, 15, 40, 30]

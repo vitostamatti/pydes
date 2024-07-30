@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "pydes"
-version = "0.1.2"
+name = "py-des-lib"
+version = "0.1.3"
 description = "Event discrete, process based simulation for Python."
 authors = ["vitostamatti <vitostamatti@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "pydes", from = "src" }]
 
 [tool.urls]
 Homepage = "https://pydes.readthedocs.io/"
 Documentation = "https://pydes.readthedocs.io/"
-Repository = "https://github.com/tiangolo/fastapi"
 "Source code" = "https://github.com/vitostamatti/pydes"
 
 [tool.setuptools]
@@ -17,11 +17,11 @@ license-files = ["LICENSE.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
 greenlet = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
-mypy = "*"
 
 [build-system]
 requires = ["poetry-core"]

@@ -12,9 +12,9 @@ class Process1(Component):
         self.event = event
 
     def main(self):
-        self.sim.record(self, "wait for event")
+        self.sim.record(self.id, "wait for event")
         self.event.wait()
-        self.sim.record(self, "event was triggered")
+        self.sim.record(self.id, "event was triggered")
 
 
 # --8<-- [end:example-1]
@@ -27,11 +27,11 @@ class Process2(Component):
         self.event = event
 
     def main(self):
-        self.sim.record(self, "sleeps before triggering event")
+        self.sim.record(self.id, "sleeps before triggering event")
         self.sim.sleep(10)
-        self.sim.record(self, "sets event")
+        self.sim.record(self.id, "sets event")
         self.event.set()
-        self.sim.record(self, "event was set")
+        self.sim.record(self.id, "event was set")
 
 
 # --8<-- [end:example-2]
@@ -41,7 +41,7 @@ sim = Simulator()
 event = Event(sim)
 p1 = Process1(sim, event)
 p2 = Process2(sim, event)
-sim.schedule(p1)
-sim.schedule(p2)
+sim.schedule(p1.main)
+sim.schedule(p2.main)
 sim.run()
 # --8<-- [end:run]
