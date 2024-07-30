@@ -5,12 +5,11 @@ description = "Event discrete, process based simulation for Python."
 authors = ["vitostamatti <vitostamatti@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "src" }]
+packages = [{ include = "pydes", from = "src" }]
 
 [tool.urls]
 Homepage = "https://pydes.readthedocs.io/"
 Documentation = "https://pydes.readthedocs.io/"
-Repository = "https://github.com/tiangolo/fastapi"
 "Source code" = "https://github.com/vitostamatti/pydes"
 
 [tool.setuptools]
