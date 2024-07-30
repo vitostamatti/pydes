@@ -17,6 +17,7 @@ license-files = ["LICENSE.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
 greenlet = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
