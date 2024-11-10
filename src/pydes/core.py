@@ -19,7 +19,7 @@ class Simulator:
     Its main objective is to schedule process and events and then execute them in a time-ordered way.
 
     Args:
-        initial_time: The initial simulation time specified as a float or datetime object.
+        init: The initial simulation time specified as a float or datetime object.
         trace: Indicates whether tracing is enabled or not.
 
     Simulators can be instantiated either using numeric time (float or int) or datetime time.

@@ -26,7 +26,7 @@ Use an infinite `while` loop within the `main` method to encapsulate the process
 --8<-- "./docs/code/01_process_example.py:example-1"
 ```
 
-Alternatively, activate the `Component` within the `main` method by passing `self` to the `schedule` method.
+Alternatively, activate the `Component` within the `main` method by passing `self.main` to the `schedule` method.
 
 ```py linenums="1" hl_lines="11"
 --8<-- "./docs/code/01_process_example.py:example-2"
