@@ -1,0 +1,7 @@
+-e .
+mkdocs
+mkdocstrings[python]
+mkdocs-material
+mkdocs-gen-files
+mkdocs-literate-nav
+mkdocs-section-index
