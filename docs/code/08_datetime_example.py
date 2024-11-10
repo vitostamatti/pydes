@@ -52,7 +52,7 @@ class Process3(Component):
 
 # --8<-- [start:run]
 now = datetime.now()
-sim = Simulator(initial_time=datetime.now())
+sim = Simulator(init=datetime.now())
 state = State(value=False)
 p1 = Process1(sim)
 p1_1 = Process1(sim)

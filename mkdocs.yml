@@ -17,6 +17,8 @@ repo_name: vitostamatti/pydes
 
 
 plugins:
+  - autorefs:
+      resolve_closest: true
   - search:
   - gen-files:
       scripts:

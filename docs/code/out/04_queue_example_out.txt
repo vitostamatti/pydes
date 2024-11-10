@@ -12,15 +12,18 @@
 | 15                             | Process1.0      | inserted element into queue              | None                           |
 | 15                             | Process1.0      | 1 elements in queue                      | None                           |
 | 15                             | Process1.0      | Element(id=2) created                    | None                           |
-| 21                             | Process1.0      | inserted element into queue              | None                           |
-| 21                             | Process1.0      | 2 elements in queue                      | None                           |
-| 21                             | Process1.0      | Element(id=3) created                    | None                           |
-| 25                             | Process2.0      | requesting an element from queue         | None                           |
-| 25                             | Process2.0      | got Element(id=1) from queue             | None                           |
-| 25                             | Process2.0      | waiting before getting next element      | None                           |
-| 27                             | Process1.0      | inserted element into queue              | None                           |
-| 27                             | Process1.0      | 2 elements in queue                      | None                           |
-| 27                             | Process1.0      | Element(id=4) created                    | None                           |
+| 20                             | Process1.0      | inserted element into queue              | None                           |
+| 20                             | Process1.0      | 2 elements in queue                      | None                           |
+| 20                             | Process1.0      | Element(id=3) created                    | None                           |
+| 24                             | Process2.0      | requesting an element from queue         | None                           |
+| 24                             | Process2.0      | got Element(id=1) from queue             | None                           |
+| 24                             | Process2.0      | waiting before getting next element      | None                           |
+| 25                             | Process1.0      | inserted element into queue              | None                           |
+| 25                             | Process1.0      | 2 elements in queue                      | None                           |
+| 25                             | Process1.0      | Element(id=4) created                    | None                           |
+| 35                             | Process2.0      | requesting an element from queue         | None                           |
+| 35                             | Process2.0      | got Element(id=2) from queue             | None                           |
+| 35                             | Process2.0      | waiting before getting next element      | None                           |
 | 35                             | Process1.0      | inserted element into queue              | None                           |
-| 35                             | Process1.0      | 3 elements in queue                      | None                           |
+| 35                             | Process1.0      | 2 elements in queue                      | None                           |
 | 35                             | Process1.0      | Element(id=5) created                    | None                           |

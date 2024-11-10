@@ -21,9 +21,9 @@ class Process1(Component):
         self.state = state
 
     def main(self):
-        self.sim.record(self, "wait for state")
+        self.sim.record(self.id, "wait for state")
         self.state.wait(States.TRUE)
-        self.sim.record(self, "state wait finished")
+        self.sim.record(self.id, "state wait finished")
 
 
 # --8<-- [end:example-2]
@@ -36,11 +36,11 @@ class Process2(Component):
         self.state = state
 
     def main(self):
-        self.sim.record(self, "sleeps before changing state")
+        self.sim.record(self.id, "sleeps before changing state")
         self.sim.sleep(10)
-        self.sim.record(self, "sets state")
+        self.sim.record(self.id, "sets state")
         self.state.set(States.TRUE)
-        self.sim.record(self, "state changed")
+        self.sim.record(self.id, "state changed")
 
 
 # --8<-- [end:example-3]

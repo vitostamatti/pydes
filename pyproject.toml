@@ -23,6 +23,16 @@ greenlet = "^3.0.3"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 
+[tool.poetry.group.docs.dependencies]
+mkdocs = "*"
+mkdocs-material = "*"
+mkdocs-gen-files = "*"
+mkdocs-literate-nav = "*"
+mkdocs-section-index = "*"
+mkdocstrings = { extras = ["python"], version = "*" }
+
+# mkdocstrings[python] = "*"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
